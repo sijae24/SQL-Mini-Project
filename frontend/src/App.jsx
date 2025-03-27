@@ -1,31 +1,22 @@
-import { useEffect, useState } from 'react'
-import axios from 'axios'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Home from './pages/Home';
+import Login from './pages/Login';
 
 function App() {
-
-  const [users, setUsers] = useState([])
-
-  const fetchAPI = async () => {
-    const response = await axios.get('http://localhost:5000/api/users')
-    setUsers(response.data.users)
-  };
-
-  useEffect(() => { 
-    fetchAPI()
-  }, []);
-
   return (
-    <>
-      <div className="flex flex-col justify-center items-center h-screen p-4">
-        <h1 className="text-3xl font-bold text-red-500 mb-4">Users</h1>
-        <ul className="list-disc pl-8">
-          {users.map((user) => (
-            <li key={user} className="py-1">{user}</li>
-          ))}
-        </ul>
+    <Router>
+      <div>
+        <Navbar />
+        <div className="container mx-auto px-4 py-8">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </div>
       </div>
-    </>
-  )
+    </Router>
+  );
 }
 
-export default App
+export default App;
