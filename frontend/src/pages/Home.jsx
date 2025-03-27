@@ -7,12 +7,14 @@ const Home = () => {
       {/* Hero Section */}
       <div className="hero min-h-[400px] bg-base-300 rounded-lg mb-8">
         <div className="hero-content text-center">
-          <div>
-            <h1 className="text-5xl font-bold text-primary">Welcome to Our Library</h1>
-            <p className="py-6 max-w-md mx-auto">
+          <div className="px-4 sm:px-8">
+            <h1 className="text-4xl sm:text-5xl font-bold text-primary">
+              Welcome to Our Library
+            </h1>
+            <p className="py-4 sm:py-6 max-w-full sm:max-w-md mx-auto">
               Discover our vast collection of books, attend amazing events, and join our community of readers.
             </p>
-            <Link to="/login" className="btn btn-primary btn-lg hover:bg-secondary">
+            <Link to="/login" className="btn btn-primary btn-lg hover:bg-secondary ">
               Get Started
               <ArrowRightIcon className="h-5 w-5 ml-2" />
             </Link>
