@@ -1,27 +1,65 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
   const [registerData, setRegisterData] = useState({
+    name: "",
     email: "",
     phone: "",
     isVolunteer: false,
   });
+
   const navigate = useNavigate();
+
   const handleLogin = (e) => {
     e.preventDefault();
-    setUser({ name }); 
-    navigate("/"); 
+    axios
+      .get("/api/users", {
+        params: {
+          userName: name,
+          email: email,
+        },
+      })
+      .then((response) => {
+        if (response.data.userID) {
+          // Check for valid user
+          setUser(response.data); // Set user state
+          navigate("/");
+        } else {
+          console.log("Logged in:", response.data);
+          alert("Invalid credentials");
+        }
+      })
+      .catch((error) => {
+        console.error("Login error:", error);
+        alert("Login failed. Please try again.");
+      });
+  };
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+    axios
+      .post("/api/users", registerData)
+      .then((response) => {
+        alert("Thank you for registering!");
+        console.log("Registered:", response.data);
+        setIsRegistering(false);
+        // Optionally prefill login info
+        setEmail(registerData.email);
+        setName(registerData.name);
+      })
+      .catch((error) => {
+        console.error("Registration error:", error);
+      });
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
     if (isRegistering) {
-      alert("Thank you for registering!");
-      setIsRegistering(false);
+      handleRegister(e);
     } else {
       handleLogin(e);
     }
@@ -137,4 +175,3 @@ const Login = () => {
 };
 
 export default Login;
-

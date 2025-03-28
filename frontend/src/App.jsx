@@ -11,16 +11,7 @@ import Help from "./pages/Help";
 
 function App() {
   const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    setUser({
-      name: "Test",
-      email: "test@test.com",
-      isVolunteer: false
-    });
-  }, []);
-
-
+  
   return (
     <Router>
       <div>
