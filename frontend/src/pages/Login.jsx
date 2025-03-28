@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const Login = () => {
+const Login = ({ setUser }) => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
@@ -10,51 +10,49 @@ const Login = () => {
     name: "",
     email: "",
     phone: "",
-    isVolunteer: false,
   });
 
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    axios
-      .get("/api/users", {
-        params: {
-          userName: name,
-          email: email,
-        },
-      })
-      .then((response) => {
-        if (response.data.userID) {
-          // Check for valid user
-          setUser(response.data); // Set user state
-          navigate("/");
-        } else {
-          console.log("Logged in:", response.data);
-          alert("Invalid credentials");
-        }
-      })
-      .catch((error) => {
-        console.error("Login error:", error);
-        alert("Login failed. Please try again.");
+    try {
+      const response = await axios.post("http://localhost:5000/login", {
+        email,
+        name,
       });
-  };
 
-  const handleRegister = (e) => {
+      if (response.data.success) {
+        setUser(response.data.user);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        navigate("/");
+      } else {
+        alert(response.data.message || "Invalid credentials");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Login failed. Please try again.");
+    }
+  };
+  const handleRegister = async (e) => {
     e.preventDefault();
-    axios
-      .post("/api/users", registerData)
-      .then((response) => {
-        alert("Thank you for registering!");
-        console.log("Registered:", response.data);
+    try {
+      const response = await axios.post("http://localhost:5000/register", {
+        userName: registerData.name,
+        email: registerData.email,
+        phoneNumber: registerData.phone,
+      });
+
+      if (response.data.message === "User added successfully") {
+        alert("Registration successful! Please login.");
         setIsRegistering(false);
-        // Optionally prefill login info
         setEmail(registerData.email);
         setName(registerData.name);
-      })
-      .catch((error) => {
-        console.error("Registration error:", error);
-      });
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+      alert("Registration failed. Please try again.");
+    }
   };
 
   const handleSubmit = (e) => {
@@ -146,18 +144,6 @@ const Login = () => {
                     value={registerData.phone}
                     onChange={(e) => setRegisterData({ ...registerData, phone: e.target.value })}
                   />
-                </div>
-                <div className="form-control">
-                  <label className="label cursor-pointer">
-                    <span className="label-text">Register as Volunteer</span>
-                    <input
-                      type="checkbox"
-                      name="isVolunteer"
-                      className="toggle toggle-primary"
-                      checked={registerData.isVolunteer}
-                      onChange={(e) => setRegisterData({ ...registerData, isVolunteer: e.target.checked })}
-                    />
-                  </label>
                 </div>
                 <button type="submit" className="btn btn-primary hover:bg-secondary w-full">
                   Register
