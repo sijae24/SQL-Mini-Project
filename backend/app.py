@@ -228,58 +228,7 @@ def add_attendance():
     return jsonify({"message": "Attendance recorded"}), 201
 
 
-@app.route("/api/signup", methods=["POST"])
-def signup():
-    data = request.get_json()
-    name = data.get("name")
-    email = data.get("email")
-    phone = data.get("phone")
-    is_volunteer = data.get("isVolunteer", False)
 
-
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-
-    cursor.execute(
-        "INSERT INTO User (userName, phoneNumber, email) VALUES (?, ?, ?)",
-        (name, phone, email)
-    )
-    user_id = cursor.lastrowid  
-
-
-    if is_volunteer:
-        cursor.execute(
-            "INSERT INTO Personnel (userID, position, salary) VALUES (?, ?, ?)",
-            (user_id, "Volunteer", 0)
-        )
-
-
-    conn.commit()
-    conn.close()
-
-
-    return jsonify({"message": "User registered successfully"}), 201
-
-@app.route("/api/login", methods=["POST"])
-def login():
-    data = request.get_json()
-    name = data.get("name")
-    email = data.get("email")
-
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-
-    cursor.execute("SELECT * FROM User WHERE userName = ? AND email = ?", (name, email))
-    user = cursor.fetchone()
-
-    conn.close()
-
-    if user:
-        return jsonify({"message": "Login successful", "userID": user[0]}), 200
-    else:
-        return jsonify({"error": "Invalid name or email"}), 401
-
-   
 @app.route("/")
 def home():
     return "Library Management System API is running!"
