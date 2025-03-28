@@ -42,6 +42,27 @@ def get_library_items():
         "trackCount": r[8], "issueNumber": r[9], "ISSN": r[10]
     } for r in rows])
 
+@app.route("/api/donates", methods=["GET"])
+def get_donations():
+    user_id = request.args.get("userID")
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    if user_id:
+        cursor.execute("SELECT * FROM Donates WHERE userID = ?", (user_id,))
+    else:
+        cursor.execute("SELECT * FROM Donates")
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    donations = [
+        {"userID": row[1], "itemID": row[2], "donationDate": row[3]}
+        for row in rows
+    ]
+    return jsonify(donations)
+
+
 @app.route("/api/libraryitems", methods=["POST"])
 def add_library_item():
     data = request.get_json()
@@ -67,22 +88,57 @@ def add_borrow():
     cursor.execute("""
         INSERT INTO Borrows (userID, itemID, borrowDate, dueDate, returnDate, fine, status)
         VALUES (?, ?, ?, ?, ?, ?, ?)""",
-        (data["userID"], data["itemID"], data["borrowDate"], data["dueDate"],
-         data.get("returnDate"), data.get("fine", 0), data["status"]))
+        (
+            data["userID"],
+            data["itemID"],
+            data["borrowDate"],
+            data["dueDate"],
+            data.get("returnDate"),          # nullable
+            data.get("fine", 0),             # default fine 0
+            data.get("status", "borrowed")   # default status
+        ))
     conn.commit()
     conn.close()
     return jsonify({"message": "Borrow record added successfully"}), 201
+
+@app.route("/api/borrows", methods=["GET"])
+def get_borrows():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM Borrows")
+    rows = cursor.fetchall()
+    conn.close()
+
+    borrows = []
+    for row in rows:
+        borrows.append({
+            "borrowID": row[0],
+            "userID": row[1],
+            "itemID": row[2],
+            "borrowDate": row[3],
+            "dueDate": row[4],
+            "returnDate": row[5],
+            "fine": row[6],
+            "status": row[7]
+        })
+    return jsonify(borrows)
 
 @app.route("/api/borrows/<int:borrow_id>", methods=["PUT"])
 def update_borrow(borrow_id):
     data = request.get_json()
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute("""
-        UPDATE Borrows SET userID=?, itemID=?, borrowDate=?, dueDate=?, returnDate=?, fine=?, status=?
-        WHERE borrowID=?""",
-        (data["userID"], data["itemID"], data["borrowDate"], data["dueDate"],
-         data.get("returnDate"), data["fine"], data["status"], borrow_id))
+    fields = []
+    values = []
+    for key in data:
+        fields.append(f"{key} = ?")
+        values.append(data[key])
+
+    values.append(borrow_id)
+
+    sql = f"UPDATE Borrows SET {', '.join(fields)} WHERE borrowID = ?"
+    cursor.execute(sql, values)
+
     conn.commit()
     conn.close()
     return jsonify({"message": "Borrow record updated"})
