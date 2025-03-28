@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BookOpenIcon, ArrowDownTrayIcon, ArrowUpTrayIcon } from "@heroicons/react/24/outline";
+import { BookOpenIcon, ArrowDownTrayIcon, ArrowUpTrayIcon, ChartBarIcon } from "@heroicons/react/24/outline";
 
 const Browse = () => {
   const [activeTab, setActiveTab] = useState("browse");
@@ -24,6 +24,12 @@ const Browse = () => {
           onClick={() => setActiveTab("return")}
         >
           <ArrowUpTrayIcon className="h-5 w-5 mr-2" /> Return
+        </button>
+        <button 
+          className={`tab ${activeTab === "return" ? "tab-active" : ""}`}
+          onClick={() => setActiveTab("return")}
+        >
+          <ChartBarIcon className="h-5 w-5 mr-2" /> Your Loans
         </button>
       </div>
     </div>
