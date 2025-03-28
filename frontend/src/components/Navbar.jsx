@@ -1,10 +1,14 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { BookOpenIcon, CalendarIcon, GiftIcon, QuestionMarkCircleIcon, SunIcon, MoonIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline";
+import { BookOpenIcon, CalendarIcon, GiftIcon, QuestionMarkCircleIcon, SunIcon, MoonIcon, UsersIcon } from "@heroicons/react/24/outline";
 
-const Navbar = () => {
+const Navbar = ({ user, setUser }) => {
   const [theme, setTheme] = useState(localStorage.getItem("theme") ? localStorage.getItem("theme") : "autumn");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const handleLogout = () => {
+    setUser(null);
+  };
 
   const toggleTheme = () => {
     if (theme === "autumn") {
@@ -51,6 +55,11 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
+              <Link to="/volunteer" className="flex items-center" onClick={() => setSidebarOpen(false)}>
+                <UsersIcon className="h-5 w-5 mr-1" /> Volunteer
+              </Link>
+            </li>
+            <li>
               <Link to="/donate" className="flex items-center" onClick={() => setSidebarOpen(false)}>
                 <GiftIcon className="h-5 w-5 mr-1" /> Donate
               </Link>
@@ -82,9 +91,15 @@ const Navbar = () => {
         </div>
         <div className="flex-none">
           <div className="flex items-center space-x-4">
+          {user ? (
+            <button onClick={handleLogout} className="btn btn-primary hover:bg-secondary">
+              Logout
+            </button>
+          ) : (
             <Link to="/login" className="btn btn-primary hover:bg-secondary">
               Login
             </Link>
+          )}
             <label className="swap swap-rotate">
               <input type="checkbox" onChange={toggleTheme} />
               <SunIcon className="swap-on h-8 w-8 fill-current" />
