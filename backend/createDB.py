@@ -10,6 +10,7 @@ def create_database():
     base_path = os.path.join(os.path.dirname(__file__), "database")
     db_path = os.path.join(base_path, "miniproj.db")
     conn = sqlite3.connect(db_path)
+    conn.execute("PRAGMA foreign_keys = ON") 
     cursor = conn.cursor()
 
     run_sql_script(cursor, os.path.join(base_path, "schema.sql"))
