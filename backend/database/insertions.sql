@@ -1,4 +1,4 @@
-INSERT INTO User (userID, userName, phoneNumber, email) VALUES
+INSERT INTO "User" (userID, userName, phoneNumber, email) VALUES
 (1, 'LeBron James', '6041123457', 'LeBron.James@gmail.com'),
 (2, 'Evan Smith', '6045632134', 'evan.smith@gmail.com'),
 (3, 'Jake Love', '6042103125', 'jake.love@yahoo.com'),
@@ -28,20 +28,20 @@ INSERT INTO LibraryItem (itemID, title, itemType, availability, location, ISBN, 
 (2, 'Thriller', 'CD', 2, 'Shelf B2', NULL, NULL, 'Michael Jackson', 9, NULL, NULL),
 (3, 'Scientific American March', 'Magazine', 5, 'Shelf C3', NULL, NULL, NULL, NULL, 'March2023', NULL),
 (4, 'Nature Neuroscience', 'Journal', 2, 'Online', NULL, NULL, NULL, NULL, NULL, '0028-0836'),
-(5, 'Future of AI', 'FutureItem', 0, 'Shelf D1', NULL, NULL, NULL, NULL, NULL, NULL),
+(5, 'Future of AI', 'Book', 0, 'Shelf D1', NULL, 'John Futureman', NULL, NULL, NULL, NULL),
 (6, 'The Great Gatsby', 'Book', 1, 'Shelf A2', '9780743273565', 'F. Scott Fitzgerald', NULL, NULL, NULL, NULL),
 (7, 'Kind of Blue', 'CD', 3, 'Shelf B3', NULL, NULL, 'Miles Davis', 5, NULL, NULL),
 (8, 'Time Magazine April', 'Magazine', 4, 'Shelf C1', NULL, NULL, NULL, NULL, 'April2023', NULL),
 (9, 'Journal of Data Science', 'Journal', 2, 'Online', NULL, NULL, NULL, NULL, NULL, '2378-3751'),
-(10, 'Quantum Mechanics Explained', 'FutureItem', 0, 'Shelf D2', NULL, NULL, NULL, NULL, NULL, NULL),
-(11, 'AI and Ethics', 'FutureItem', 0, 'Shelf D3', NULL, NULL, NULL, NULL, NULL, NULL),
-(12, 'Smart Libraries 2030', 'FutureItem', 0, 'Shelf D4', NULL, NULL, NULL, NULL, NULL, NULL),
-(13, 'Future of Coding', 'FutureItem', 0, 'Shelf D5', NULL, NULL, NULL, NULL, NULL, NULL),
-(14, 'Augmented Education', 'FutureItem', 0, 'Shelf D6', NULL, NULL, NULL, NULL, NULL, NULL),
-(15, 'Blockchain in Libraries', 'FutureItem', 0, 'Shelf D7', NULL, NULL, NULL, NULL, NULL, NULL),
-(16, 'Digital Storytelling', 'FutureItem', 0, 'Shelf D8', NULL, NULL, NULL, NULL, NULL, NULL),
-(17, 'Quantum Archives', 'FutureItem', 0, 'Shelf D9', NULL, NULL, NULL, NULL, NULL, NULL),
-(18, 'Next-Gen Cataloging', 'FutureItem', 0, 'Shelf D10', NULL, NULL, NULL, NULL, NULL, NULL)
+(10, 'Quantum Mechanics Explained', 'Book', 0, 'Shelf D2', NULL, 'Alice Quantum', NULL, NULL, NULL, NULL),
+(11, 'AI and Ethics', 'Book', 0, 'Shelf D3', NULL, 'Sam Ethos', NULL, NULL, NULL, NULL),
+(12, 'Smart Libraries 2030', 'Book', 0, 'Shelf D4', NULL, 'Lib Smartman', NULL, NULL, NULL, NULL),
+(13, 'Future of Coding', 'Book', 0, 'Shelf D5', NULL, 'Coder Future', NULL, NULL, NULL, NULL),
+(14, 'Augmented Education', 'Book', 0, 'Shelf D6', NULL, 'Aug Ed', NULL, NULL, NULL, NULL),
+(15, 'Blockchain in Libraries', 'Book', 0, 'Shelf D7', NULL, 'Blocky Chain', NULL, NULL, NULL, NULL),
+(16, 'Digital Storytelling', 'Book', 0, 'Shelf D8', NULL, 'Digi Teller', NULL, NULL, NULL, NULL),
+(17, 'Quantum Archives', 'Book', 0, 'Shelf D9', NULL, 'Q Archivist', NULL, NULL, NULL, NULL),
+(18, 'Next-Gen Cataloging', 'Book', 0, 'Shelf D10', NULL, 'Next Cat', NULL, NULL, NULL, NULL);
 
 INSERT INTO Donates (donationID, userID, itemID, donationDate) VALUES
 (1, 3, 5, '2025-03-27'),
@@ -53,7 +53,8 @@ INSERT INTO Donates (donationID, userID, itemID, donationDate) VALUES
 (15, 9, 15, '2025-04-05'),
 (16, 10, 16, '2025-04-06'),
 (17, 1, 17, '2025-04-06'),
-(18, 2, 18, '2025-04-07')
+(18, 2, 18, '2025-04-07');
+
 
 INSERT INTO Borrows (borrowID, userID, itemID, borrowDate, dueDate, returnDate, fine, status) VALUES
 (1, 1, 100, '2025-03-01', '2025-03-15', NULL, 0, 'Borrowed'),

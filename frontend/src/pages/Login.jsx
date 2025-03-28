@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+
+
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -11,21 +15,42 @@ const Login = () => {
     isVolunteer: false,
   });
   const navigate = useNavigate();
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setUser({ name }); 
-    navigate("/"); 
+    try {
+      const response = await axios.post("http://localhost:5000/api/login", {
+        name: name,
+        email: email,
+      });
+      console.log("Login successful:", response.data);
+      alert("Welcome back!");
+      navigate("/");
+    } catch (error) {
+      console.error("Login failed:", error);
+      alert("Invalid login. Please check your name and email.");
+    }
   };
+  
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (isRegistering) {
-      alert("Thank you for registering!");
-      setIsRegistering(false);
+      try {
+        const response = await axios.post("http://localhost:5000/api/signup", registerData);
+        alert("Thank you for registering!");
+        console.log("Registered:", response.data);
+        setIsRegistering(false);
+      } catch (error) {
+        console.error("Registration failed:", error);
+        alert("Registration failed");
+      }
     } else {
       handleLogin(e);
     }
   };
+ 
+
 
   return (
     <div className="max-w-md mx-auto">
@@ -136,5 +161,10 @@ const Login = () => {
   );
 };
 
+
 export default Login;
+
+
+
+
 
