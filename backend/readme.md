@@ -13,7 +13,7 @@ As already noted in the Setup Instructions:
 
         Windows:
             python -m venv venv
-            venv\Scripts\activate
+            venv/Scripts/activate
             
         Mac/Linux:
 
