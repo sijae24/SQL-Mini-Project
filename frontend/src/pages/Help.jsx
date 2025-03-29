@@ -1,8 +1,31 @@
 import { useState } from "react";
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
+import axios from "axios";
 
-const Help = () => {
+const Help = ({user}) => {
   const [newRequest, setNewRequest] = useState("");
+  const [requestSubmitted, setRequestSubmitted] = useState(false);
+
+  // Function to handle form submission 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:5000/help", {
+        userID: user.userID,
+        request: newRequest,
+        status: "Open",  
+      });
+
+      // Check if the request was successful
+      if (response.data && response.data.message === "Help request added successfully") {
+        setNewRequest("");
+        setRequestSubmitted(true);
+        setTimeout(() => setRequestSubmitted(false), 3000);
+      }
+    } catch (error) {
+      console.error("Error submitting help request:", error);
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -14,7 +37,7 @@ const Help = () => {
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
             <h2 className="card-title">Submit a Help Request</h2>
-            <form>
+            <form onSubmit={handleSubmit}>
               <div className="form-control">
                 <label className="label">
                   <span className="label-text">Your Request: </span>
@@ -36,6 +59,17 @@ const Help = () => {
                 </button>
               </div>
             </form>
+            {requestSubmitted && (
+                  <p className="mt-2 text-green-600">
+                    Help request submitted successfully!
+                  </p>
+                )}
+          </div>
+        </div>
+        {/* TODO: Fetch and display previous help requests */}
+        <div className="card bg-base-100 shadow-xl">
+          <div className="card-body">
+            <h2 className="card-title">Your Previous Help Requests</h2>
           </div>
         </div>
       </div>
@@ -44,4 +78,7 @@ const Help = () => {
 };
 
 export default Help;
+
+
+
 

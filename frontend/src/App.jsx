@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navigate } from "react-router-dom";
-import { useState} from "react";
+import { useEffect, useState} from "react";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -11,7 +11,15 @@ import Help from "./pages/Help";
 
 function App() {
   const [user, setUser] = useState(null);
-  
+
+  // To make sure the user is logged in
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
+
   return (
     <Router>
       <div>

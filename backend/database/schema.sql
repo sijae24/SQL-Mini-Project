@@ -1,5 +1,4 @@
 -- User Table
-
 CREATE TABLE User (
     userID INTEGER PRIMARY KEY AUTOINCREMENT,
     userName TEXT NOT NULL,
@@ -20,6 +19,7 @@ CREATE TABLE Personnel (
     )
 );
 
+-- LibraryItem Table
 CREATE TABLE LibraryItem (
     itemID INTEGER PRIMARY KEY,
     title TEXT NOT NULL,
@@ -35,6 +35,7 @@ CREATE TABLE LibraryItem (
     ISSN TEXT UNIQUE                 -- for Journals
 );
 
+-- Donates Table
 CREATE TABLE Donates (
     donationID INTEGER PRIMARY KEY,
     userID INTEGER,
@@ -83,6 +84,7 @@ CREATE TABLE Event (
     FOREIGN KEY (personnelID) REFERENCES Personnel(userID),
     FOREIGN KEY (roomID) REFERENCES Room(roomID)
 );
+
 -- HelpRequest Table
 CREATE TABLE HelpRequest (
     requestID INTEGER PRIMARY KEY,
@@ -101,10 +103,9 @@ CREATE TABLE Attends (
     FOREIGN KEY (eventID) REFERENCES Event(eventID)
 );
 
+-- FutureItem Table
 CREATE TABLE FutureItem (
     itemID INTEGER PRIMARY KEY,
     arrivalDate DATE NOT NULL,
     FOREIGN KEY (itemID) REFERENCES LibraryItem(itemID)
 );
-
-

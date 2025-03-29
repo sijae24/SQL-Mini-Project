@@ -26,6 +26,7 @@ def login():
     user = cursor.fetchone()
     conn.close()
     
+    # If user exists, return user details
     if user:
         return jsonify({
             "success": True,
@@ -133,7 +134,20 @@ def add_volunteer():
 
 
 # -------------------- HELP REQUEST --------------------
-
+@app.route("/help", methods=["POST"])
+def add_help_request():
+    data = request.get_json()
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO HelpRequest (userID, request, status) 
+        VALUES (?, ?, ?)
+    """, (data["userID"], data["request"], data["status"]))
+    conn.commit()
+    conn.close()
+    return jsonify({
+        "message": "Help request added successfully"
+    }), 201
 
 # -------------------- ATTENDS --------------------
 
@@ -141,10 +155,6 @@ def add_volunteer():
 @app.route("/", methods=["GET"])
 def index():
     return jsonify({"message": "The api is running"})
-
-
-
-
 
 
 if __name__ == "__main__":

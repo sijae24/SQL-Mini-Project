@@ -3,24 +3,26 @@ import axios from "axios";
 import { UsersIcon } from "@heroicons/react/24/outline";
 
 const Volunteer = ({ user }) => {
-  const [loading, setLoading] = useState(true);
   const [personnelStatus, setPersonnelStatus] = useState({
     isPersonnel: false,
     position: null
   });
 
+  // To check the personnel status
   useEffect(() => {
     const checkPersonnelStatus = async () => {
       try {
         const response = await axios.post("http://localhost:5000/check-personnel", {
           userID: user.userID,
         });
-        
+
+        // Update personnel status
         setPersonnelStatus({
           isPersonnel: response.data.isPersonnel,
           position: response.data.position
         });
-        
+
+        // Update user object in local storage
         const updatedUser = { 
           ...user, 
           isPersonnel: response.data.isPersonnel,
@@ -30,13 +32,13 @@ const Volunteer = ({ user }) => {
       } catch (error) {
         console.error("Error checking personnel status:", error);
       } finally {
-        setLoading(false);
       }
     };
 
     checkPersonnelStatus();
   }, [user]);
 
+  // Function to handle volunteer registration
   const handleVolunteer = async (e) => {
     e.preventDefault();
     try {
@@ -68,9 +70,6 @@ const Volunteer = ({ user }) => {
     }
   };
   
-  if (loading) {
-    return <div className="loading-spinner">Loading...</div>;
-  }
 
   return (
     <div className="max-w-md mx-auto">
@@ -80,6 +79,7 @@ const Volunteer = ({ user }) => {
             <UsersIcon className="h-8 w-8 mr-2" /> Volunteer Registration
           </h1>
           
+          {/* Display registration status */}
           {personnelStatus.isPersonnel ? (
             <div role="alert" className={`alert ${
               personnelStatus.position === "Volunteer" ? "alert-success" : "alert-info"
@@ -101,14 +101,15 @@ const Volunteer = ({ user }) => {
               <button 
                 onClick={handleVolunteer}
                 className="btn btn-primary hover:bg-secondary w-full"
-                disabled={loading}
               >
-                {loading ? "Processing..." : "Register as Volunteer"}
+              Register as Volunteer
               </button>
             </div>
           )}
         </div>
       </div>
+
+      {/* TODO: Fetch Personnel List */}
     </div>
   );
 };

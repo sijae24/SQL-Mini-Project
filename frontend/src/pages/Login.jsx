@@ -14,6 +14,7 @@ const Login = ({ setUser }) => {
 
   const navigate = useNavigate();
 
+  // Function to handle login by sending a POST request
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -22,6 +23,7 @@ const Login = ({ setUser }) => {
         name,
       });
 
+      // If login is successful, update the user state then navigate to the home page
       if (response.data.success) {
         setUser(response.data.user);
         localStorage.setItem("user", JSON.stringify(response.data.user));
@@ -34,6 +36,8 @@ const Login = ({ setUser }) => {
       alert("Login failed. Please try again.");
     }
   };
+
+  // Function to handle registration 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
@@ -43,6 +47,7 @@ const Login = ({ setUser }) => {
         phoneNumber: registerData.phone,
       });
 
+      // If registration is successful, show a success message
       if (response.data.message === "User added successfully") {
         alert("Registration successful! Please login.");
         setIsRegistering(false);
@@ -55,6 +60,7 @@ const Login = ({ setUser }) => {
     }
   };
 
+  // Function to handle form submission if registering or logging in 
   const handleSubmit = (e) => {
     if (isRegistering) {
       handleRegister(e);
