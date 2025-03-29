@@ -2,10 +2,13 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import sqlite3
 
+
 app = Flask(__name__)
 CORS(app)
 
+
 DATABASE = "database/library.db"
+
 
 # -------------------- USERS --------------------
 @app.route("/api/users", methods=["GET"])
@@ -17,6 +20,7 @@ def get_users():
     conn.close()
     return jsonify([{"userID": r[0], "userName": r[1], "email": r[2]} for r in rows])
 
+
 @app.route("/api/users", methods=["POST"])
 def add_user():
     data = request.get_json()
@@ -27,6 +31,7 @@ def add_user():
     conn.commit()
     conn.close()
     return jsonify({"message": "User added successfully"}), 201
+
 
 # -------------------- LIBRARY ITEMS --------------------
 @app.route("/api/libraryitems")
@@ -42,19 +47,23 @@ def get_library_items():
         "trackCount": r[8], "issueNumber": r[9], "ISSN": r[10]
     } for r in rows])
 
+
 @app.route("/api/donates", methods=["GET"])
 def get_donations():
     user_id = request.args.get("userID")
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
 
+
     if user_id:
         cursor.execute("SELECT * FROM Donates WHERE userID = ?", (user_id,))
     else:
         cursor.execute("SELECT * FROM Donates")
 
+
     rows = cursor.fetchall()
     conn.close()
+
 
     donations = [
         {"userID": row[1], "itemID": row[2], "donationDate": row[3]}
@@ -63,21 +72,24 @@ def get_donations():
     return jsonify(donations)
 
 
+
+
 @app.route("/api/libraryitems", methods=["POST"])
 def add_library_item():
     data = request.get_json()
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
     cursor.execute("""
-        INSERT INTO LibraryItem 
-        (title, itemType, availability, location, ISBN, author, artist, trackCount, issueNumber, ISSN) 
+        INSERT INTO LibraryItem
+        (title, itemType, availability, location, ISBN, author, artist, trackCount, issueNumber, ISSN)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (data["title"], data["itemType"], data["availability"], data["location"],
-          data.get("ISBN"), data.get("author"), data.get("artist"), 
+          data.get("ISBN"), data.get("author"), data.get("artist"),
           data.get("trackCount"), data.get("issueNumber"), data.get("ISSN")))
     conn.commit()
     conn.close()
     return jsonify({"message": "Library item added"}), 201
+
 
 # -------------------- BORROWS --------------------
 @app.route("/api/borrows", methods=["POST"])
@@ -101,6 +113,7 @@ def add_borrow():
     conn.close()
     return jsonify({"message": "Borrow record added successfully"}), 201
 
+
 @app.route("/api/borrows", methods=["GET"])
 def get_borrows():
     conn = sqlite3.connect(DATABASE)
@@ -108,6 +121,7 @@ def get_borrows():
     cursor.execute("SELECT * FROM Borrows")
     rows = cursor.fetchall()
     conn.close()
+
 
     borrows = []
     for row in rows:
@@ -123,6 +137,7 @@ def get_borrows():
         })
     return jsonify(borrows)
 
+
 @app.route("/api/borrows/<int:borrow_id>", methods=["PUT"])
 def update_borrow(borrow_id):
     data = request.get_json()
@@ -134,14 +149,18 @@ def update_borrow(borrow_id):
         fields.append(f"{key} = ?")
         values.append(data[key])
 
+
     values.append(borrow_id)
+
 
     sql = f"UPDATE Borrows SET {', '.join(fields)} WHERE borrowID = ?"
     cursor.execute(sql, values)
 
+
     conn.commit()
     conn.close()
     return jsonify({"message": "Borrow record updated"})
+
 
 # -------------------- DONATES --------------------
 @app.route("/api/donates", methods=["POST"])
@@ -157,6 +176,7 @@ def add_donation():
     conn.close()
     return jsonify({"message": "Donation recorded"}), 201
 
+
 # -------------------- EVENTS --------------------
 @app.route("/api/events")
 def get_events():
@@ -170,6 +190,7 @@ def get_events():
         "date": r[4], "personnelID": r[5], "roomID": r[6]
     } for r in rows])
 
+
 # -------------------- VOLUNTEER (Personnel) --------------------
 @app.route("/api/personnel", methods=["POST"])
 def add_volunteer():
@@ -181,6 +202,7 @@ def add_volunteer():
     conn.commit()
     conn.close()
     return jsonify({"message": "Volunteer added"}), 201
+
 
 # -------------------- HELP REQUEST --------------------
 @app.route("/api/helprequests", methods=["POST"])
@@ -205,9 +227,19 @@ def add_attendance():
     conn.close()
     return jsonify({"message": "Attendance recorded"}), 201
 
+
+
 @app.route("/")
 def home():
     return "Library Management System API is running!"
 
+
+
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+
