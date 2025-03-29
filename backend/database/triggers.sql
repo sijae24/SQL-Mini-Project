@@ -1,14 +1,13 @@
 -- Trigger to auto-set arrivalDate for FutureItem donations
+
 CREATE TRIGGER SetArrivalDateOnDonation
 AFTER INSERT ON Donates
-FOR EACH ROW
-WHEN (
-  (SELECT itemType FROM LibraryItem WHERE itemID = NEW.itemID) = 'FutureItem'
-)
+WHEN (SELECT itemType FROM LibraryItem WHERE itemID = NEW.itemID) IS NOT NULL
 BEGIN
-  INSERT INTO FutureItem (itemID, arrivalDate)
-  VALUES (NEW.itemID, DATE(NEW.donationDate, '+7 days'));
+    INSERT INTO FutureItem (itemID, arrivalDate)
+    VALUES (NEW.itemID, DATE(NEW.donationDate, '+7 days'));
 END;
+
 
 -- Trigger to decrease availability when item is borrowed
 CREATE TRIGGER DecreaseAvailability

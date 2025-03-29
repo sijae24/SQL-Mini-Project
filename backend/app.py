@@ -2,10 +2,13 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import sqlite3
 
+
 app = Flask(__name__)
 CORS(app)
 
+
 DATABASE = "database/library.db"
+
 
 # -------------------- USERS --------------------
 @app.route("/login", methods=["POST"])
@@ -128,6 +131,7 @@ def add_volunteer():
 
 
 
+
 # -------------------- HELP REQUEST --------------------
 
 
@@ -137,6 +141,11 @@ def add_volunteer():
 @app.route("/", methods=["GET"])
 def index():
     return jsonify({"message": "The api is running"})
+
+
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,10 +1,13 @@
 -- User Table
+
 CREATE TABLE User (
-    userID INTEGER PRIMARY KEY,
+    userID INTEGER PRIMARY KEY AUTOINCREMENT,
     userName TEXT NOT NULL,
-    phoneNumber TEXT UNIQUE,
-    email TEXT UNIQUE
+    phoneNumber TEXT UNIQUE CHECK (length(phoneNumber) >= 10),
+    email TEXT UNIQUE CHECK (email LIKE '%@%.%' AND length(email) >= 5)
 );
+
+
 
 -- Personnel Table
 CREATE TABLE Personnel (
@@ -20,7 +23,7 @@ CREATE TABLE Personnel (
 CREATE TABLE LibraryItem (
     itemID INTEGER PRIMARY KEY,
     title TEXT NOT NULL,
-    itemType TEXT NOT NULL,           -- Book, CD, Magazine, Journal, Future
+    itemType TEXT NOT NULL,           -- Book, CD, Magazine, Journal
     availability INTEGER NOT NULL CHECK (availability >= 0),
     location TEXT NOT NULL,           -- Physical or Online
 
@@ -29,10 +32,9 @@ CREATE TABLE LibraryItem (
     trackCount INTEGER,              -- for CDs
     artist TEXT,                      -- for CDs
     issueNumber TEXT,                -- for Magazines
-    ISSN TEXT UNIQUE                -- for Journals
+    ISSN TEXT UNIQUE                 -- for Journals
 );
 
--- Donation Table 
 CREATE TABLE Donates (
     donationID INTEGER PRIMARY KEY,
     userID INTEGER,
@@ -41,6 +43,7 @@ CREATE TABLE Donates (
     FOREIGN KEY (userID) REFERENCES User(userID),
     FOREIGN KEY (itemID) REFERENCES LibraryItem(itemID)
 );
+
 
 -- Borrows Table 
 CREATE TABLE Borrows (
@@ -61,6 +64,13 @@ CREATE UNIQUE INDEX unique_active_borrow
 ON Borrows(userID, itemID)
 WHERE returnDate IS NULL;
 
+-- Room Table
+CREATE TABLE Room (
+    roomID INTEGER PRIMARY KEY,
+    roomName TEXT NOT NULL,
+    capacity INTEGER NOT NULL CHECK (capacity > 0)
+);
+
 -- Event Table
 CREATE TABLE Event (
     eventID INTEGER PRIMARY KEY,
@@ -73,14 +83,6 @@ CREATE TABLE Event (
     FOREIGN KEY (personnelID) REFERENCES Personnel(userID),
     FOREIGN KEY (roomID) REFERENCES Room(roomID)
 );
-
--- Room Table
-CREATE TABLE Room (
-    roomID INTEGER PRIMARY KEY,
-    roomName TEXT NOT NULL,
-    capacity INTEGER NOT NULL CHECK (capacity > 0)
-);
-
 -- HelpRequest Table
 CREATE TABLE HelpRequest (
     requestID INTEGER PRIMARY KEY,
