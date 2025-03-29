@@ -8,206 +8,136 @@ CORS(app)
 DATABASE = "database/library.db"
 
 # -------------------- USERS --------------------
-@app.route("/api/users", methods=["GET"])
-def get_users():
+@app.route("/login", methods=["POST"])
+def login():
+    data = request.get_json()
+    email = data.get("email")
+    name = data.get("name")
+    
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute("SELECT userID, userName, email FROM User")
-    rows = cursor.fetchall()
+    
+    # Check if user exists with matching email and name
+    cursor.execute("SELECT userID, userName, email FROM User WHERE email = ? AND userName = ?", 
+                  (email, name))
+    user = cursor.fetchone()
     conn.close()
-    return jsonify([{"userID": r[0], "userName": r[1], "email": r[2]} for r in rows])
+    
+    if user:
+        return jsonify({
+            "success": True,
+            "user": {
+                "userID": user[0],
+                "name": user[1],
+                "email": user[2]
+            }
+        })
+    else:
+        return jsonify({"success": False, "message": "Invalid credentials"}), 401
 
-@app.route("/api/users", methods=["POST"])
-def add_user():
+@app.route("/register", methods=["POST"])
+def register():
     data = request.get_json()
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
     cursor.execute("INSERT INTO User (userName, phoneNumber, email) VALUES (?, ?, ?)",
                    (data["userName"], data["phoneNumber"], data["email"]))
+    user_id = cursor.lastrowid  
     conn.commit()
     conn.close()
-    return jsonify({"message": "User added successfully"}), 201
+    return jsonify({
+        "message": "User added successfully",
+        "userID": user_id
+    }), 201
 
-# -------------------- LIBRARY ITEMS --------------------
-@app.route("/api/libraryitems")
-def get_library_items():
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM LibraryItem")
-    rows = cursor.fetchall()
-    conn.close()
-    return jsonify([{
-        "itemID": r[0], "title": r[1], "itemType": r[2], "availability": r[3],
-        "location": r[4], "ISBN": r[5], "author": r[6], "artist": r[7],
-        "trackCount": r[8], "issueNumber": r[9], "ISSN": r[10]
-    } for r in rows])
-
-@app.route("/api/donates", methods=["GET"])
-def get_donations():
-    user_id = request.args.get("userID")
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-
-    if user_id:
-        cursor.execute("SELECT * FROM Donates WHERE userID = ?", (user_id,))
-    else:
-        cursor.execute("SELECT * FROM Donates")
-
-    rows = cursor.fetchall()
-    conn.close()
-
-    donations = [
-        {"userID": row[1], "itemID": row[2], "donationDate": row[3]}
-        for row in rows
-    ]
-    return jsonify(donations)
-
-
-@app.route("/api/libraryitems", methods=["POST"])
-def add_library_item():
+# -------------------- Personnel --------------------
+@app.route("/check-personnel", methods=["POST"])
+def check_personnel():
     data = request.get_json()
+    user_id = data.get("userID")
+    
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
+    
+    # Check if user exists in Personnel table (any position)
     cursor.execute("""
-        INSERT INTO LibraryItem 
-        (title, itemType, availability, location, ISBN, author, artist, trackCount, issueNumber, ISSN) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    """, (data["title"], data["itemType"], data["availability"], data["location"],
-          data.get("ISBN"), data.get("author"), data.get("artist"), 
-          data.get("trackCount"), data.get("issueNumber"), data.get("ISSN")))
-    conn.commit()
+        SELECT position FROM Personnel 
+        WHERE userID = ?
+    """, (user_id,))
+    
+    result = cursor.fetchone()
     conn.close()
-    return jsonify({"message": "Library item added"}), 201
-
-# -------------------- BORROWS --------------------
-@app.route("/api/borrows", methods=["POST"])
-def add_borrow():
-    data = request.get_json()
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute("""
-        INSERT INTO Borrows (userID, itemID, borrowDate, dueDate, returnDate, fine, status)
-        VALUES (?, ?, ?, ?, ?, ?, ?)""",
-        (
-            data["userID"],
-            data["itemID"],
-            data["borrowDate"],
-            data["dueDate"],
-            data.get("returnDate"),          # nullable
-            data.get("fine", 0),             # default fine 0
-            data.get("status", "borrowed")   # default status
-        ))
-    conn.commit()
-    conn.close()
-    return jsonify({"message": "Borrow record added successfully"}), 201
-
-@app.route("/api/borrows", methods=["GET"])
-def get_borrows():
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Borrows")
-    rows = cursor.fetchall()
-    conn.close()
-
-    borrows = []
-    for row in rows:
-        borrows.append({
-            "borrowID": row[0],
-            "userID": row[1],
-            "itemID": row[2],
-            "borrowDate": row[3],
-            "dueDate": row[4],
-            "returnDate": row[5],
-            "fine": row[6],
-            "status": row[7]
+    
+    if result:
+        return jsonify({
+            "success": True,
+            "isPersonnel": True,
+            "position": result[0]  # Returns the position of the user
         })
-    return jsonify(borrows)
+    else:
+        return jsonify({
+            "success": True,
+            "isPersonnel": False,
+            "position": None
+        })
 
-@app.route("/api/borrows/<int:borrow_id>", methods=["PUT"])
-def update_borrow(borrow_id):
-    data = request.get_json()
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    fields = []
-    values = []
-    for key in data:
-        fields.append(f"{key} = ?")
-        values.append(data[key])
-
-    values.append(borrow_id)
-
-    sql = f"UPDATE Borrows SET {', '.join(fields)} WHERE borrowID = ?"
-    cursor.execute(sql, values)
-
-    conn.commit()
-    conn.close()
-    return jsonify({"message": "Borrow record updated"})
-
-# -------------------- DONATES --------------------
-@app.route("/api/donates", methods=["POST"])
-def add_donation():
-    data = request.get_json()
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute("""
-        INSERT INTO Donates (userID, itemID, donationDate)
-        VALUES (?, ?, ?)""",
-        (data["userID"], data["itemID"], data["donationDate"]))
-    conn.commit()
-    conn.close()
-    return jsonify({"message": "Donation recorded"}), 201
-
-# -------------------- EVENTS --------------------
-@app.route("/api/events")
-def get_events():
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM Event")
-    rows = cursor.fetchall()
-    conn.close()
-    return jsonify([{
-        "eventID": r[0], "eventName": r[1], "eventType": r[2], "audience": r[3],
-        "date": r[4], "personnelID": r[5], "roomID": r[6]
-    } for r in rows])
-
-# -------------------- VOLUNTEER (Personnel) --------------------
-@app.route("/api/personnel", methods=["POST"])
+@app.route("/volunteer", methods=["POST"])
 def add_volunteer():
     data = request.get_json()
+    user_id = data.get("userID")
+    
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO Personnel (userID, position, salary) VALUES (?, ?, ?)",
-                   (data["userID"], data["position"], data["salary"]))
+  
+    # Check if already in Personnel table (any position)
+    cursor.execute("""
+        SELECT position FROM Personnel 
+        WHERE userID = ?
+    """, (user_id,))
+    
+    existing_record = cursor.fetchone()
+    
+    if existing_record:
+        conn.close()
+        return jsonify({
+            "success": False,
+            "message": f"User is already registered as {existing_record[0]}",
+            "isPersonnel": True,
+            "position": existing_record[0]
+        }), 400
+            
+    # Add as volunteer
+    cursor.execute("""
+        INSERT INTO Personnel (userID, position, salary) 
+        VALUES (?, 'Volunteer', 0)
+    """, (user_id,))
     conn.commit()
     conn.close()
-    return jsonify({"message": "Volunteer added"}), 201
+    
+    return jsonify({
+        "success": True,
+        "message": "Volunteer added successfully",
+        "isPersonnel": True,
+        "position": "Volunteer"
+    }), 201
+
+# -------------------- LIBRARY ITEMS --------------------
+
+
+# -------------------- EVENTS --------------------
+
+
 
 # -------------------- HELP REQUEST --------------------
-@app.route("/api/helprequests", methods=["POST"])
-def add_help_request():
-    data = request.get_json()
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO HelpRequest (userID, request, status) VALUES (?, ?, ?)",
-                   (data["userID"], data["request"], data["status"]))
-    conn.commit()
-    conn.close()
-    return jsonify({"message": "Help request added"}), 201
-# -------------------- ATTENDS --------------------
-@app.route("/api/attends", methods=["POST"])
-def add_attendance():
-    data = request.get_json()
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO Attends (userID, eventID) VALUES (?, ?)",
-                   (data["userID"], data["eventID"]))
-    conn.commit()
-    conn.close()
-    return jsonify({"message": "Attendance recorded"}), 201
 
-@app.route("/")
-def home():
-    return "Library Management System API is running!"
+
+# -------------------- ATTENDS --------------------
+
+
+@app.route("/", methods=["GET"])
+def index():
+    return jsonify({"message": "The api is running"})
 
 if __name__ == "__main__":
     app.run(debug=True)
+
