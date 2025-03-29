@@ -43,6 +43,22 @@ INSERT INTO LibraryItem (itemID, title, itemType, availability, location, ISBN, 
 (17, 'Quantum Archives', 'Book', 0, 'Shelf D9', NULL, 'Q Archivist', NULL, NULL, NULL, NULL),
 (18, 'Next-Gen Cataloging', 'Book', 0, 'Shelf D10', NULL, 'Next Cat', NULL, NULL, NULL, NULL);
 
+INSERT INTO LibraryItem (title, itemType, availability, location, ISBN, author)
+VALUES 
+('The Book Thief', 'Book', 4, 'Shelf B1', '9780375842207', 'Markus Zusak'),
+('Sapiens: A Brief History of Humankind', 'Book', 2, 'Shelf B2', '9780062316097', 'Yuval Noah Harari');
+
+INSERT INTO LibraryItem (title, itemType, availability, location, artist, trackCount)
+VALUES 
+('Abbey Road', 'CD', 3, 'Shelf C1', 'The Beatles', 17),
+('To Pimp a Butterfly', 'CD', 2, 'Shelf C2', 'Kendrick Lamar', 16);
+
+INSERT INTO LibraryItem (title, itemType, availability, location, issueNumber, ISSN)
+VALUES 
+('National Geographic - April 2025', 'Magazine', 5, 'Shelf M1', 'Apr2025', '0027-9358');
+
+
+
 INSERT INTO Donates (donationID, userID, itemID, donationDate) VALUES
 (1, 3, 5, '2025-03-27'),
 (2, 4, 10, '2025-03-25'),
@@ -55,18 +71,6 @@ INSERT INTO Donates (donationID, userID, itemID, donationDate) VALUES
 (17, 1, 17, '2025-04-06'),
 (18, 2, 18, '2025-04-07');
 
-
-INSERT INTO Borrows (borrowID, userID, itemID, borrowDate, dueDate, returnDate, fine, status) VALUES
-(1, 1, 100, '2025-03-01', '2025-03-15', NULL, 0, 'Borrowed'),
-(2, 2, 101, '2025-03-02', '2025-03-16', NULL, 0, 'Borrowed'),
-(3, 3, 102, '2025-03-03', '2025-03-17', NULL, 0, 'Borrowed'),
-(4, 4, 103, '2025-03-04', '2025-03-18', NULL, 0, 'Borrowed'),
-(5, 5, 104, '2025-03-05', '2025-03-19', NULL, 0, 'Borrowed'),
-(6, 6, 105, '2025-03-06', '2025-03-20', NULL, 0, 'Borrowed'),
-(7, 7, 106, '2025-03-07', '2025-03-21', NULL, 0, 'Borrowed'),
-(8, 8, 107, '2025-03-08', '2025-03-22', NULL, 0, 'Borrowed'),
-(9, 9, 108, '2025-03-09', '2025-03-23', NULL, 0, 'Borrowed'),
-(10, 10, 109, '2025-03-10', '2025-03-24', NULL, 0, 'Borrowed');
 
 INSERT INTO Room (roomID, roomName, capacity) VALUES
 (1, 'Main Hall', 100),
@@ -159,5 +163,17 @@ INSERT INTO Attends (userID, eventID) VALUES
 (4, 6),
 (5, 7);
 
+INSERT INTO Borrows (userID, itemID, borrowDate, dueDate, returnDate, fine, status)
+VALUES 
+  (1, 1, '2024-03-01', '2024-03-10', NULL, 'borrowed'),
+  (2, 3, '2025-02-15', '2025-02-28', '2025-03-05', 3.5, 'returned'),
+  (3, 2, '2025-03-20', '2025-04-03', NULL, 0, 'borrowed'),
+  (4, 6, '2024-12-01', '2024-12-15', '2025-03-01', 38.0, 'returned'),
+  (5, 10, '2025-03-28', '2025-04-11', NULL, 0, 'borrowed'),
+  (6, 4, '2025-03-10', '2025-03-24', '2025-03-23', 0, 'returned'),
+  (7, 5, '2025-03-01', '2025-03-15', '2025-03-16', 0.5, 'returned'),
+  (8, 11, '2025-03-25', '2025-04-08', NULL, 0, 'borrowed'),
+  (9, 7, '2025-03-05', '2025-03-19', '2025-03-18', 0, 'returned'),
+  (10, 15, '2025-03-27', '2025-04-10', NULL, 0, 'borrowed');
 
 
