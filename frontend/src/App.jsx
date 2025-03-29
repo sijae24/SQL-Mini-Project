@@ -1,25 +1,17 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Navigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState} from "react";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Browse from "./pages/Browse";
 import Events from "./pages/Events";
+import Volunteer from "./pages/Volunteer";
 import Help from "./pages/Help";
 
 function App() {
   const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    setUser({
-      name: "Test",
-      email: "test@test.com",
-      isVolunteer: true
-    });
-  }, []);
-
-
+  
   return (
     <Router>
       <div>
@@ -30,6 +22,7 @@ function App() {
             <Route path="/login" element={user ? <Navigate to="/" /> : <Login setUser={setUser} />} />
             <Route path="/browse" element={user ? <Browse user={user} /> : <Navigate to="/login" />} />
             <Route path="/events" element={user ? <Events user={user} /> : <Navigate to="/login" />} />
+            <Route path="/volunteer" element={user ? <Volunteer user={user} /> : <Navigate to="/login" />} />
             <Route path="/help" element={user ? <Help user={user} /> : <Navigate to="/login" />} />
           </Routes>
         </div>
