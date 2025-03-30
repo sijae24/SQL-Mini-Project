@@ -80,11 +80,12 @@ const Events = ({ user }) => {
   // Filter events based on search term and type
   const filterEvents = (eventsToFilter) => {
     // Check if any value in the event matches the search term
-    return eventsToFilter.filter((event) => {
-      (searchTerm === "" ||
-        Object.values(event).some((value) => value !== null && String(value).toLowerCase().includes(searchTerm.toLowerCase()))) &&
-        (selectedType === "all" || event.eventType === selectedType);
-    });
+    return eventsToFilter.filter(
+      (event) =>
+        (searchTerm === "" ||
+          Object.values(event).some((value) => value !== null && String(value).toLowerCase().includes(searchTerm.toLowerCase()))) &&
+        (selectedType === "all" || event.eventType === selectedType)
+    );
   };
 
   // Filter events based on active tab
