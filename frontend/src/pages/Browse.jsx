@@ -110,26 +110,19 @@ const Browse = ({ user }) => {
 
   // Function to filter library items based on search term and selected type
   const filterItems = (itemsToFilter) => {
-    return itemsToFilter.filter((item) => {
-      // Check if any value in the item matches the search term
-      const matchesSearch =
-        searchTerm === "" ||
-        Object.values(item).some((value) => {
-          if (value === null) return false;
-          const valueString = typeof value === "string" ? value : String(value);
-          return valueString.toLowerCase().includes(searchTerm.toLowerCase());
-        });
-
-      const matchesType = selectedType === "all" || item.itemType === selectedType;
-
-      return matchesSearch && matchesType;
-    });
+    //  Check if any value in the item matches 
+    return itemsToFilter.filter(
+      (item) =>
+        (searchTerm === "" ||
+          Object.values(item).some((value) => value !== null && String(value).toLowerCase().includes(searchTerm.toLowerCase()))) &&
+        (selectedType === "all" || item.itemType === selectedType)
+    );
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8 flex items-center">
-      <BookOpenIcon className="h-8 w-8 mr-2" /> Browse Library Items
+        <BookOpenIcon className="h-8 w-8 mr-2" /> Browse Library Items
       </h1>
       {/* Tabs for browse, borrow, return, and returned */}
       <div className="tabs tabs-boxed mb-8">
@@ -185,7 +178,6 @@ const Browse = ({ user }) => {
           )}
         </div>
       )}
-
 
       {activeTab === "returned" && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

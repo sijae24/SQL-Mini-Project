@@ -77,22 +77,13 @@ const Events = ({ user }) => {
     }
   };
 
-
   // Filter events based on search term and type
   const filterEvents = (eventsToFilter) => {
+    // Check if any value in the event matches the search term
     return eventsToFilter.filter((event) => {
-      // Check if any value in the event matches the search term
-      const matchesSearch =
-        searchTerm === "" ||
-        Object.values(event).some((value) => {
-          if (value === null) return false;
-          const valueString = typeof value === "string" ? value : String(value);
-          return valueString.toLowerCase().includes(searchTerm.toLowerCase());
-        });
-
-      const matchesType = selectedType === "all" || event.eventType === selectedType;
-
-      return matchesSearch && matchesType;
+      (searchTerm === "" ||
+        Object.values(event).some((value) => value !== null && String(value).toLowerCase().includes(searchTerm.toLowerCase()))) &&
+        (selectedType === "all" || event.eventType === selectedType);
     });
   };
 
@@ -101,7 +92,7 @@ const Events = ({ user }) => {
     if (activeTab === "registered") {
       return registeredEvents.includes(event.eventID);
     }
-    return true; 
+    return true;
   });
 
   return (
@@ -131,11 +122,7 @@ const Events = ({ user }) => {
           />
         </div>
         <div className="w-full md:w-48">
-          <select 
-            className="select select-bordered w-full" 
-            value={selectedType} 
-            onChange={(e) => setSelectedType(e.target.value)}
-          >
+          <select className="select select-bordered w-full" value={selectedType} onChange={(e) => setSelectedType(e.target.value)}>
             <option value="all">All Types</option>
             <option value="Workshop">Workshops</option>
             <option value="Lecture">Lectures</option>
@@ -176,11 +163,19 @@ const Events = ({ user }) => {
 
                 <div className="card-actions justify-end">
                   {registeredEvents.includes(event.eventID) ? (
-                    <button className="btn btn-primary hover:btn-secondary" onClick={() => handleUnregister(event.eventID)} disabled={isRegistering}>
-                      Cancel 
+                    <button
+                      className="btn btn-primary hover:btn-secondary"
+                      onClick={() => handleUnregister(event.eventID)}
+                      disabled={isRegistering}
+                    >
+                      Cancel
                     </button>
                   ) : (
-                    <button className="btn btn-primary hover:btn-secondary" onClick={() => handleRegister(event.eventID)} disabled={isRegistering}>
+                    <button
+                      className="btn btn-primary hover:btn-secondary"
+                      onClick={() => handleRegister(event.eventID)}
+                      disabled={isRegistering}
+                    >
                       Register
                     </button>
                   )}
