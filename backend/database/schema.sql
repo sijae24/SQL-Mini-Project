@@ -2,8 +2,8 @@
 CREATE TABLE User (
     userID INTEGER PRIMARY KEY AUTOINCREMENT,
     userName TEXT NOT NULL,
-    phoneNumber TEXT UNIQUE CHECK (length(phoneNumber) >= 10),
-    email TEXT UNIQUE CHECK (email LIKE '%@%.%' AND length(email) >= 5)
+    phoneNumber TEXT UNIQUE NOT NULL CHECK (length(phoneNumber) >= 10),
+    email TEXT UNIQUE NOT NULL CHECK (email LIKE '%@%.%' AND length(email) >= 5)
 );
 
 

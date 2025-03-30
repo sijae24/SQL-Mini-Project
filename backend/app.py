@@ -196,6 +196,8 @@ def get_borrowed_items(user_id):
         })
 
     return jsonify(borrowed)
+
+
 @app.route("/borrow", methods=["POST"])
 def borrow_item():
     data = request.get_json()
@@ -254,6 +256,8 @@ def borrow_item():
     except Exception as e:
         print("❌ Borrow error:", e)
         return jsonify({"success": False, "message": str(e)}), 500
+
+
 @app.route("/return", methods=["POST"])
 def return_item():
     data = request.get_json()
@@ -289,7 +293,7 @@ def return_item():
         print("Return error:", e)
         return jsonify({"success": False, "message": str(e)}), 500
     
-    
+
 @app.route("/returned-items/<int:user_id>", methods=["GET"])
 def get_returned_items(user_id):
     conn = sqlite3.connect(DATABASE)
@@ -348,7 +352,6 @@ def add_help_request():
 
 
 
-# -------------------- ATTENDS --------------------
 
 
 @app.route("/", methods=["GET"])
