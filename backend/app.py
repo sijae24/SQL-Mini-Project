@@ -352,6 +352,24 @@ def add_help_request():
 
 
 
+@app.route("/previous-requests/<int:user_id>", methods=["GET"])
+def get_previous_requests(user_id):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT request, status FROM HelpRequest WHERE userID = ?
+    """, (user_id,))
+    rows = cursor.fetchall()
+    conn.close()
+
+    requests = []
+    for row in rows:
+        requests.append({
+            "request": row[0],
+            "status": row[1]    
+        })
+
+    return jsonify(requests)
 
 
 @app.route("/", methods=["GET"])

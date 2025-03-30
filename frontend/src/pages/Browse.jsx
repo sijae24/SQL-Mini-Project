@@ -3,7 +3,7 @@ import axios from "axios";
 import { BookOpenIcon, ArrowDownTrayIcon, ArrowUpTrayIcon, ClockIcon } from "@heroicons/react/24/outline";
 import ItemCard from "../components/ItemCard";
 
-const Browse = () => {
+const Browse = ({user}) => {
   const [activeTab, setActiveTab] = useState("browse");
   const [items, setItems] = useState([]);
   const [borrowed, setBorrowed] = useState([]);
@@ -12,8 +12,8 @@ const Browse = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("all");
 
-  const userID = JSON.parse(localStorage.getItem("user"))?.userID;
-
+  const userID = user?.userID;
+  
   // Function to fetch library items
   const fetchItems = () => {
     axios
