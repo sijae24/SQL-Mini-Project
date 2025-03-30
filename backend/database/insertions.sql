@@ -46,22 +46,13 @@ INSERT INTO LibraryItem (itemID, title, itemType, availability, location, ISBN, 
 (15, 'Blockchain in Libraries', 'Book', 0, 'Shelf D7', NULL, 'Blocky Chain', NULL, NULL, NULL, NULL),
 (16, 'Digital Storytelling', 'Book', 0, 'Shelf D8', NULL, 'Digi Teller', NULL, NULL, NULL, NULL),
 (17, 'Quantum Archives', 'Book', 0, 'Shelf D9', NULL, 'Q Archivist', NULL, NULL, NULL, NULL),
-(18, 'Next-Gen Cataloging', 'Book', 0, 'Shelf D10', NULL, 'Next Cat', NULL, NULL, NULL, NULL);
-
-INSERT INTO LibraryItem (title, itemType, availability, location, ISBN, author)
-VALUES 
-('The Book Thief', 'Book', 4, 'Shelf B1', '9780375842207', 'Markus Zusak'),
-('Sapiens: A Brief History of Humankind', 'Book', 2, 'Shelf B2', '9780062316097', 'Yuval Noah Harari'),
-('One Piece', 'Book', 5, 'Shelf B2', '9781569319017', 'Eiichiro Oda');
-
-INSERT INTO LibraryItem (title, itemType, availability, location, artist, trackCount)
-VALUES 
-('Abbey Road', 'CD', 3, 'Shelf C1', 'The Beatles', 17),
-('To Pimp a Butterfly', 'CD', 2, 'Shelf C2', 'Kendrick Lamar', 16);
-
-INSERT INTO LibraryItem (title, itemType, availability, location, issueNumber, ISSN)
-VALUES 
-('National Geographic - April 2025', 'Magazine', 5, 'Shelf M1', 'Apr2025', '00279358');
+(18, 'Next-Gen Cataloging', 'Book', 0, 'Shelf D10', NULL, 'Next Cat', NULL, NULL, NULL, NULL),
+(19, 'The Book Thief', 'Book', 4, 'Shelf B1', '9780375842207', 'Markus Zusak', NULL, NULL, NULL, NULL),
+(20, 'Sapiens: A Brief History of Humankind', 'Book', 2, 'Shelf B2', '9780062316097', 'Yuval Noah Harari', NULL, NULL, NULL, NULL),
+(21, 'One Piece', 'Book', 5, 'Shelf B2', '9781569319017', 'Eiichiro Oda', NULL, NULL, NULL, NULL),
+(22, 'Abbey Road', 'CD', 3, 'Shelf C1', NULL, NULL, 'The Beatles', 17, NULL, NULL),
+(23, 'To Pimp a Butterfly', 'CD', 2, 'Shelf C2', NULL, NULL, 'Kendrick Lamar', 16, NULL, NULL),
+(24, 'National Geographic - April 2025', 'Magazine', 5, 'Shelf M1', NULL, NULL, NULL, NULL, 'Apr2025', '00279358');
 
 INSERT INTO FutureItem (itemID, arrivalDate) VALUES
 (5, '2025-04-03'),
@@ -144,19 +135,6 @@ INSERT INTO Borrows (borrowID, userID, itemID, borrowDate, dueDate, returnDate, 
 (10, 10, 6, '2025-03-12', '2025-03-19', '2025-03-22', 1.5, 'returned late');
 
 
-INSERT INTO Room (roomID, roomName, capacity) VALUES
-(1, 'Room A', 25),
-(2, 'Room B', 40),
-(3, 'Room C', 30),
-(4, 'Digital Lab', 20),
-(5, 'Conference Hall', 100),
-(6, 'Children Area', 15),
-(7, 'AV Room', 35),
-(8, 'Study Zone 1', 12),
-(9, 'Seminar Room', 50),
-(10, 'Lecture Hall', 80);
-
-
 
 INSERT INTO Attends (userID, eventID) VALUES
 (1, 1),
@@ -169,19 +147,5 @@ INSERT INTO Attends (userID, eventID) VALUES
 (8, 8),
 (9, 9),
 (10, 10);
-
-
-INSERT INTO Borrows (userID, itemID, borrowDate, dueDate, returnDate, fine, status)
-VALUES 
-  (1, 1, '2024-03-01', '2024-03-10', NULL, 'borrowed'),
-  (2, 3, '2025-02-15', '2025-02-28', '2025-03-05', 3.5, 'returned'),
-  (3, 2, '2025-03-20', '2025-04-03', NULL, 0, 'borrowed'),
-  (4, 6, '2024-12-01', '2024-12-15', '2025-03-01', 38.0, 'returned'),
-  (5, 10, '2025-03-28', '2025-04-11', NULL, 0, 'borrowed'),
-  (6, 4, '2025-03-10', '2025-03-24', '2025-03-23', 0, 'returned'),
-  (7, 5, '2025-03-01', '2025-03-15', '2025-03-16', 0.5, 'returned'),
-  (8, 11, '2025-03-25', '2025-04-08', NULL, 0, 'borrowed'),
-  (9, 7, '2025-03-05', '2025-03-19', '2025-03-18', 0, 'returned'),
-  (10, 15, '2025-03-27', '2025-04-10', NULL, 0, 'borrowed');
 
 
