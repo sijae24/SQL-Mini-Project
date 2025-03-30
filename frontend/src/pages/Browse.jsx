@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  BookOpenIcon,
-  ArrowDownTrayIcon,
-  ArrowUpTrayIcon,
-  ClockIcon,
-} from "@heroicons/react/24/outline";
+import { BookOpenIcon, ArrowDownTrayIcon, ArrowUpTrayIcon, ClockIcon } from "@heroicons/react/24/outline";
+import ItemCard from "../components/ItemCard";
 
 const Browse = () => {
   const [activeTab, setActiveTab] = useState("browse");
@@ -13,15 +9,18 @@ const Browse = () => {
   const [borrowed, setBorrowed] = useState([]);
   const [returned, setReturned] = useState([]);
   const [isBorrowing, setIsBorrowing] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedType, setSelectedType] = useState("all");
 
   const userID = JSON.parse(localStorage.getItem("user"))?.userID;
 
+  // Function to fetch library items
   const fetchItems = () => {
     axios
       .get("http://localhost:5000/library-items")
       .then((res) => {
         const sortedItems = res.data
-          .filter((item) => item.availability > 0 || item.status === "coming_soon")
+          .filter((item) => item.availability > 0)
           .sort((a, b) => {
             const typeOrder = { Book: 1, Magazine: 2, CD: 3, Journal: 4 };
             const typeCompare = (typeOrder[a.itemType] || 5) - (typeOrder[b.itemType] || 5);
@@ -36,6 +35,7 @@ const Browse = () => {
       });
   };
 
+  // Function to fetch borrowed items
   const fetchBorrowed = () => {
     axios
       .get(`http://localhost:5000/borrowed-items/${userID}`)
@@ -43,6 +43,7 @@ const Browse = () => {
       .catch((err) => console.error("Error fetching borrowed items:", err));
   };
 
+  // Function to fetch returned items
   const fetchReturned = () => {
     axios
       .get(`http://localhost:5000/returned-items/${userID}`)
@@ -62,6 +63,7 @@ const Browse = () => {
     }
   }, [activeTab, userID]);
 
+  // Function to handle item borrow
   const handleBorrow = (itemID) => {
     if (!userID || isBorrowing) {
       console.log("Duplicate borrow blocked");
@@ -93,161 +95,109 @@ const Browse = () => {
       });
   };
 
+  // Function to handle item return
   const handleReturn = (itemID) => {
-    axios
-      .post("http://localhost:5000/return", { userID, itemID })
-      .then((res) => {
-        console.log("✅ Returned:", res.data);
-        fetchItems();
-        fetchBorrowed();
-        fetchReturned();
-        alert(`📘 "${res.data.title}" returned successfully!`);
-      })  ;
+    axios.post("http://localhost:5000/return", { userID, itemID }).then((res) => {
+      console.log("✅ Returned:", res.data);
+      fetchItems();
+      fetchBorrowed();
+      fetchReturned();
+      alert(`📘 "${res.data.title}" returned successfully!`);
+    });
+  };
+
+  // Function to filter library items based on search term and selected type
+  const filterItems = (itemsToFilter) => {
+    return itemsToFilter.filter(item => {
+      // Check if any value in the item matches the search term 
+      const matchesSearch = searchTerm === "" || 
+        Object.values(item).some(value => {
+          if (typeof value === "string") {
+            return value.toLowerCase().includes(searchTerm.toLowerCase());
+          }
+          return false;
+        });
+      
+      const matchesType = selectedType === "all" || item.itemType === selectedType;
+      
+      return matchesSearch && matchesType;
+    });
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="tabs tabs-boxed mb-8">
-        <button
-          className={`tab ${activeTab === "browse" ? "tab-active" : ""}`}
-          onClick={() => setActiveTab("browse")}
-        >
+        <button className={`tab ${activeTab === "browse" ? "tab-active" : ""}`} onClick={() => setActiveTab("browse")}>
           <BookOpenIcon className="h-5 w-5 mr-2" /> Browse
         </button>
-        <button
-          className={`tab ${activeTab === "borrow" ? "tab-active" : ""}`}
-          onClick={() => setActiveTab("borrow")}
-        >
+        <button className={`tab ${activeTab === "borrow" ? "tab-active" : ""}`} onClick={() => setActiveTab("borrow")}>
           <ArrowDownTrayIcon className="h-5 w-5 mr-2" /> Borrowed
         </button>
-        <button
-          className={`tab ${activeTab === "return" ? "tab-active" : ""}`}
-          onClick={() => setActiveTab("return")}
-        >
+        <button className={`tab ${activeTab === "return" ? "tab-active" : ""}`} onClick={() => setActiveTab("return")}>
           <ArrowUpTrayIcon className="h-5 w-5 mr-2" /> Return
         </button>
-        <button
-          className={`tab ${activeTab === "returned" ? "tab-active" : ""}`}
-          onClick={() => setActiveTab("returned")}
-        >
+        <button className={`tab ${activeTab === "returned" ? "tab-active" : ""}`} onClick={() => setActiveTab("returned")}>
           <ClockIcon className="h-5 w-5 mr-2" /> Returned
         </button>
       </div>
 
+      <div className="flex flex-col md:flex-row gap-4 mb-6">
+        <div className="flex-1">
+          <input
+            type="text"
+            placeholder="Search by title, author, etc..."
+            className="input input-bordered w-full"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div className="w-full md:w-48">
+          <select className="select select-bordered w-full" value={selectedType} onChange={(e) => setSelectedType(e.target.value)}>
+            <option value="all">All Types</option>
+            <option value="Book">Books</option>
+            <option value="Magazine">Magazines</option>
+            <option value="CD">CDs</option>
+            <option value="Journal">Journals</option>
+          </select>
+        </div>
+      </div>
+
       {activeTab === "browse" && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {items.map((item) => (
-            <div
-              key={item.itemID}
-              className="card bg-base-100 shadow-xl transition-transform hover:scale-105"
-            >
-              <div className="card-body items-center text-center">
-                <h2 className="card-title">{item.title}</h2>
-                {item.author && <p><strong>Author:</strong> {item.author}</p>}
-                {item.artist && <p><strong>Artist:</strong> {item.artist}</p>}
-                {item.ISBN && <p><strong>ISBN:</strong> {item.ISBN}</p>}
-                {item.ISSN && <p><strong>ISSN:</strong> {item.ISSN}</p>}
-                {item.trackCount && <p><strong>Tracks:</strong> {item.trackCount}</p>}
-                <p><strong>Type:</strong> {item.itemType}</p>
-                <p><strong>Availability:</strong> {item.availability}</p>
-              </div>
-              <div className="card-actions justify-center mb-4">
-                <button
-                  className="btn bg-[#8B0015] text-white hover:bg-secondary"
-                  onClick={() => handleBorrow(item.itemID)}
-                  disabled={isBorrowing}
-                >
-                  Borrow
-                </button>
-              </div>
-            </div>
-          ))}
+          {filterItems(items).length === 0 ? (
+            <p className="col-span-full text-center text-gray-500">No items found matching your criteria.</p>
+          ) : (
+            filterItems(items).map((item) => <ItemCard key={item.itemID} item={item} onBorrow={handleBorrow} />)
+          )}
         </div>
       )}
 
       {activeTab === "borrow" && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {borrowed.length === 0 ? (
+          {filterItems(borrowed).length === 0 ? (
             <p className="col-span-full text-center text-gray-500">No borrowed items.</p>
           ) : (
-            borrowed.map((item) => (
-              <div
-                key={item.itemID}
-                className="card bg-base-100 shadow-xl transition-transform hover:scale-105"
-              >
-                <div className="card-body items-center text-center">
-                  <h2 className="card-title">{item.title}</h2>
-                  <p><strong>Type:</strong> {item.itemType}</p>
-                  {item.author && <p><strong>Author:</strong> {item.author}</p>}
-                  {item.artist && <p><strong>Artist:</strong> {item.artist}</p>}
-                  {item.ISBN && <p><strong>ISBN:</strong> {item.ISBN}</p>}
-                  {item.ISSN && <p><strong>ISSN:</strong> {item.ISSN}</p>}
-                  {item.trackCount && <p><strong>Tracks:</strong> {item.trackCount}</p>}
-                  <p><strong>Borrowed:</strong> {item.borrowDate}</p>
-                  <p><strong>Due:</strong> {item.dueDate}</p>
-                </div>
-              </div>
-            ))
+            filterItems(borrowed).map((item) => <ItemCard key={item.itemID} item={item} />)
           )}
         </div>
       )}
 
       {activeTab === "return" && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {borrowed.length === 0 ? (
+          {filterItems(borrowed).length === 0 ? (
             <p className="col-span-full text-center text-gray-500">No borrowed items to return.</p>
           ) : (
-            borrowed.map((item) => (
-              <div
-                key={item.itemID}
-                className="card bg-base-100 shadow-xl transition-transform hover:scale-105"
-              >
-                <div className="card-body items-center text-center">
-                  <h2 className="card-title">{item.title}</h2>
-                  <p><strong>Type:</strong> {item.itemType}</p>
-                  <p><strong>Borrowed:</strong> {item.borrowDate}</p>
-                  <p><strong>Due:</strong> {item.dueDate}</p>
-                </div>
-                <div className="card-actions justify-center mb-4">
-                  <button
-                    className="btn bg-[#8B0015] text-white hover:bg-secondary"
-                    onClick={() => handleReturn(item.itemID)}
-                  >
-                    Return
-                  </button>
-                </div>
-              </div>
-            ))
+            filterItems(borrowed).map((item) => <ItemCard key={item.itemID} item={item} onReturn={handleReturn} showReturnButton={true} />)
           )}
         </div>
       )}
 
       {activeTab === "returned" && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {returned.length === 0 ? (
+          {filterItems(returned).length === 0 ? (
             <p className="col-span-full text-center text-gray-500">No returned items yet.</p>
           ) : (
-            returned.map((item) => (
-              <div key={item.itemID} className="card bg-base-100 shadow-xl">
-                <div className="card-body items-center text-center">
-                  <h2 className="card-title">{item.title}</h2>
-                  <p><strong>Type:</strong> {item.itemType}</p>
-                  {item.author && <p><strong>Author:</strong> {item.author}</p>}
-                  {item.artist && <p><strong>Artist:</strong> {item.artist}</p>}
-                  {item.ISBN && <p><strong>ISBN:</strong> {item.ISBN}</p>}
-                  {item.ISSN && <p><strong>ISSN:</strong> {item.ISSN}</p>}
-                  {item.trackCount && <p><strong>Tracks:</strong> {item.trackCount}</p>}
-                  <p><strong>Borrowed:</strong> {item.borrowDate}</p>
-                  <p><strong>Due:</strong> {item.dueDate}</p>
-                  <p><strong>Returned:</strong> {item.returnDate}</p>
-                  {item.fine > 0 ? (
-                    <p className="text-red-600 font-bold">Fine: ${item.fine.toFixed(2)}</p>
-                  ) : (
-                    <p className="text-green-600 font-semibold">No fine 🎉</p>
-                  )}
-                </div>
-              </div>
-            ))
+            filterItems(returned).map((item) => <ItemCard key={item.itemID} item={item} />)
           )}
         </div>
       )}

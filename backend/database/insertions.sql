@@ -1,4 +1,4 @@
-INSERT INTO "User" (userID, userName, phoneNumber, email) VALUES
+INSERT INTO User (userID, userName, phoneNumber, email) VALUES
 (1, 'LeBron James', '6041123457', 'LeBron.James@gmail.com'),
 (2, 'Evan Smith', '6045632134', 'evan.smith@gmail.com'),
 (3, 'Jake Love', '6042103125', 'jake.love@yahoo.com'),

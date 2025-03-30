@@ -288,6 +288,8 @@ def return_item():
     except Exception as e:
         print("Return error:", e)
         return jsonify({"success": False, "message": str(e)}), 500
+    
+    
 @app.route("/returned-items/<int:user_id>", methods=["GET"])
 def get_returned_items(user_id):
     conn = sqlite3.connect(DATABASE)
@@ -343,6 +345,8 @@ def add_help_request():
     return jsonify({
         "message": "Help request added successfully"
     }), 201
+
+
 
 # -------------------- ATTENDS --------------------
 
