@@ -1,6 +1,6 @@
 -- User Table
 CREATE TABLE User (
-    userID INTEGER PRIMARY KEY AUTOINCREMENT,
+    userID INTEGER PRIMARY KEY,
     userName TEXT NOT NULL,
     phoneNumber TEXT UNIQUE NOT NULL CHECK (length(phoneNumber) >= 10),
     email TEXT UNIQUE NOT NULL CHECK (email LIKE '%@%.%' AND length(email) >= 5)

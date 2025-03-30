@@ -8,10 +8,10 @@ INSERT INTO User (userID, userName, phoneNumber, email) VALUES
 (7, 'Grace Park', '6047890123', 'grace.park@gmail.com'),
 (8, 'Harinder Singh', '6048905555', 'harry.singh@outlook.com'),
 (9, 'Jacob Tran', '6049011344', 'jacob.tran@gmail.com'),
-(10, 'Ben Shepphard', '6048046311', 'ben.shepphard@gmail.com'),
-(11, 'Gintoki Sakata', '6043219870', 'gintoki.sakata@gmail.com'),
+(10, 'Stringer Bell', '6048046311', 'stringer.bell@gmail.com'),
+(11, 'John Locke', '6048151623', 'john.locke@gmail.com'),
 (12, 'Jimin Park', '6046540613', 'jimin.park@gmail.com'),
-(13, 'Zoro Roronoa', '6047418529', 'zoro.roronoa@outlook.com'),
+(13, 'Ashton Hall', '6047418529', 'ashton.hall@outlook.com'),
 (14, 'James Flint', '6049638521', 'james.flint@gmail.com'),
 (15, 'Kevin Garvey', '6041597531', 'kevin.garvey@gmail.com');
 
@@ -31,13 +31,13 @@ INSERT INTO Personnel (userID, position, salary) VALUES
 INSERT INTO LibraryItem (itemID, title, itemType, availability, location, ISBN, author, artist, trackCount, issueNumber, ISSN) VALUES
 (1, 'Pride and Prejudice', 'Book', 3, 'Shelf A1', '9780141199078', 'Jane Austen', NULL, NULL, NULL, NULL),
 (2, 'Thriller', 'CD', 2, 'Shelf B2', NULL, NULL, 'Michael Jackson', 9, NULL, NULL),
-(3, 'Scientific American March', 'Magazine', 5, 'Shelf C3', NULL, NULL, NULL, NULL, 'March2023', NULL),
-(4, 'Nature Neuroscience', 'Journal', 2, 'Online', NULL, NULL, NULL, NULL, NULL, '0028-0836'),
-(5, 'Future of AI', 'Book', 0, 'Shelf D1', NULL, 'John Futureman', NULL, NULL, NULL, NULL),
+(3, 'Scientific American March', 'Magazine', 5, 'Shelf C3', NULL, NULL, NULL, NULL, 'March2023', 00368733),
+(4, 'Nature Neuroscience', 'Journal', 2, 'Online', NULL, NULL, NULL, NULL, NULL, '00280836'),
+(5, 'Journal of Data Science', 'Journal', 2, 'Online', NULL, NULL, NULL, NULL, NULL, '23783751'),
 (6, 'The Great Gatsby', 'Book', 1, 'Shelf A2', '9780743273565', 'F. Scott Fitzgerald', NULL, NULL, NULL, NULL),
-(7, 'Kind of Blue', 'CD', 3, 'Shelf B3', NULL, NULL, 'Miles Davis', 5, NULL, NULL),
-(8, 'Time Magazine April', 'Magazine', 4, 'Shelf C1', NULL, NULL, NULL, NULL, 'April2023', NULL),
-(9, 'Journal of Data Science', 'Journal', 2, 'Online', NULL, NULL, NULL, NULL, NULL, '2378-3751'),
+(7, 'Songs in the Key of Life', 'CD', 3, 'Shelf B3', NULL, NULL, 'Stevie Wonder', 5, NULL, NULL),
+(8, 'Time Magazine April', 'Magazine', 4, 'Shelf C1', NULL, NULL, NULL, NULL, 'April2023', 00407814),
+(9, 'Future of AI', 'Book', 0, 'Shelf D1', NULL, 'John Futureman', NULL, NULL, NULL, NULL),
 (10, 'Quantum Mechanics Explained', 'Book', 0, 'Shelf D2', NULL, 'Alice Quantum', NULL, NULL, NULL, NULL),
 (11, 'AI and Ethics', 'Book', 0, 'Shelf D3', NULL, 'Sam Ethos', NULL, NULL, NULL, NULL),
 (12, 'Smart Libraries 2030', 'Book', 0, 'Shelf D4', NULL, 'Lib Smartman', NULL, NULL, NULL, NULL),
@@ -47,15 +47,16 @@ INSERT INTO LibraryItem (itemID, title, itemType, availability, location, ISBN, 
 (16, 'Digital Storytelling', 'Book', 0, 'Shelf D8', NULL, 'Digi Teller', NULL, NULL, NULL, NULL),
 (17, 'Quantum Archives', 'Book', 0, 'Shelf D9', NULL, 'Q Archivist', NULL, NULL, NULL, NULL),
 (18, 'Next-Gen Cataloging', 'Book', 0, 'Shelf D10', NULL, 'Next Cat', NULL, NULL, NULL, NULL),
-(19, 'The Book Thief', 'Book', 4, 'Shelf B1', '9780375842207', 'Markus Zusak', NULL, NULL, NULL, NULL),
+(19, 'The Lord of the Rings', 'Book', 4, 'Shelf B1', '9780544003415', 'J.R.R Tolkien', NULL, NULL, NULL, NULL),
 (20, 'Sapiens: A Brief History of Humankind', 'Book', 2, 'Shelf B2', '9780062316097', 'Yuval Noah Harari', NULL, NULL, NULL, NULL),
-(21, 'One Piece', 'Book', 5, 'Shelf B2', '9781569319017', 'Eiichiro Oda', NULL, NULL, NULL, NULL),
+(21, 'One Piece', 'Book', 5, 'Shelf B2', '9781974760329', 'Eiichiro Oda', NULL, NULL, NULL, NULL),
 (22, 'Abbey Road', 'CD', 3, 'Shelf C1', NULL, NULL, 'The Beatles', 17, NULL, NULL),
 (23, 'To Pimp a Butterfly', 'CD', 2, 'Shelf C2', NULL, NULL, 'Kendrick Lamar', 16, NULL, NULL),
-(24, 'National Geographic - April 2025', 'Magazine', 5, 'Shelf M1', NULL, NULL, NULL, NULL, 'Apr2025', '00279358');
+(24, 'National Geographic - April 2025', 'Magazine', 5, 'Shelf M1', NULL, NULL, NULL, NULL, 'Apr2025', '00279358'),
+(25, 'Shonen Jump', 'Magazine', 5, 'Shelf M1', NULL, NULL, NULL, NULL, 'April2025', '10707199');
 
 INSERT INTO FutureItem (itemID, arrivalDate) VALUES
-(5, '2025-04-03'),
+(9, '2025-04-03'),
 (10, '2025-04-01'),
 (11, '2025-04-09'),
 (12, '2025-04-10'),
@@ -147,5 +148,3 @@ INSERT INTO Attends (userID, eventID) VALUES
 (8, 8),
 (9, 9),
 (10, 10);
-
-
