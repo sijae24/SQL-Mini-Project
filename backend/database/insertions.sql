@@ -8,7 +8,12 @@ INSERT INTO User (userID, userName, phoneNumber, email) VALUES
 (7, 'Grace Park', '6047890123', 'grace.park@gmail.com'),
 (8, 'Harinder Singh', '6048905555', 'harry.singh@outlook.com'),
 (9, 'Jacob Tran', '6049011344', 'jacob.tran@gmail.com'),
-(10, 'Ben Shepphard', '6048046311', 'ben.shepphard@gmail.com');
+(10, 'Ben Shepphard', '6048046311', 'ben.shepphard@gmail.com'),
+(11, 'Gintoki Sakata', '6043219870', 'gintoki.sakata@gmail.com'),
+(12, 'Jimin Park', '6046540613', 'jimin.park@gmail.com'),
+(13, 'Zoro Roronoa', '6047418529', 'zoro.roronoa@outlook.com'),
+(14, 'James Flint', '6049638521', 'james.flint@gmail.com'),
+(15, 'Kevin Garvey', '6041597531', 'kevin.garvey@gmail.com');
 
 INSERT INTO Personnel (userID, position, salary) VALUES
 (1, 'Librarian', 50000),
@@ -46,7 +51,8 @@ INSERT INTO LibraryItem (itemID, title, itemType, availability, location, ISBN, 
 INSERT INTO LibraryItem (title, itemType, availability, location, ISBN, author)
 VALUES 
 ('The Book Thief', 'Book', 4, 'Shelf B1', '9780375842207', 'Markus Zusak'),
-('Sapiens: A Brief History of Humankind', 'Book', 2, 'Shelf B2', '9780062316097', 'Yuval Noah Harari');
+('Sapiens: A Brief History of Humankind', 'Book', 2, 'Shelf B2', '9780062316097', 'Yuval Noah Harari'),
+('One Piece', 'Book', 5, 'Shelf B2', '9781569319017', 'Eiichiro Oda');
 
 INSERT INTO LibraryItem (title, itemType, availability, location, artist, trackCount)
 VALUES 
@@ -55,8 +61,19 @@ VALUES
 
 INSERT INTO LibraryItem (title, itemType, availability, location, issueNumber, ISSN)
 VALUES 
-('National Geographic - April 2025', 'Magazine', 5, 'Shelf M1', 'Apr2025', '0027-9358');
+('National Geographic - April 2025', 'Magazine', 5, 'Shelf M1', 'Apr2025', '00279358');
 
+INSERT INTO FutureItem (itemID, arrivalDate) VALUES
+(5, '2025-04-03'),
+(10, '2025-04-01'),
+(11, '2025-04-09'),
+(12, '2025-04-10'),
+(13, '2025-04-10'),
+(14, '2025-04-11'),
+(15, '2025-04-12'),
+(16, '2025-04-13'),
+(17, '2025-04-13'),
+(18, '2025-04-14');
 
 
 INSERT INTO Donates (donationID, userID, itemID, donationDate) VALUES
@@ -94,7 +111,12 @@ INSERT INTO Event (eventID, eventName, eventType, audience, date, personnelID, r
 (7, 'Mindfulness & Reading', 'Session', 'Adults', '2025-04-22', 4, 10),
 (8, 'Book Club: Fiction Night', 'Discussion', 'Members', '2025-04-25', 7, 8),
 (9, 'Kids Coding Hour', 'Activity', 'Children', '2025-04-26', 1, 6),
-(10, 'Ethics of AI', 'Panel', 'Academics', '2025-04-28', 3, 7);
+(10, 'Ethics of AI', 'Panel', 'Academics', '2025-04-28', 3, 7),
+(11, 'Digital Literacy 101', 'Class', 'Seniors', '2025-04-09', 4, 4),
+(12, 'Board Game Night', 'Social', 'Everyone', '2025-04-10', 5, 1),
+(13, 'Art Hour', 'Activity', 'Kids', '2025-04-11', 6, 6),
+(14, 'Climate Change Panel', 'Seminar', 'Adults', '2025-04-12', 7, 9),
+(15, 'Coding for Beginners', 'Workshop', 'Teens', '2025-04-14', 9, 3);
 
 INSERT INTO HelpRequest (requestID, userID, request, status) VALUES
 (1, 2, 'Need help with finding academic journals.', 'Open'),
@@ -134,17 +156,7 @@ INSERT INTO Room (roomID, roomName, capacity) VALUES
 (9, 'Seminar Room', 50),
 (10, 'Lecture Hall', 80);
 
-INSERT INTO Event (eventID, eventName, eventType, audience, date, personnelID, roomID) VALUES
-(1, 'Story Time', 'Kids', 'Children', '2025-04-05', 1, 6),
-(2, 'Author Talk: Sci-Fi Futures', 'Talk', 'Adults', '2025-04-07', 2, 5),
-(3, 'Resume Workshop', 'Workshop', 'Teens', '2025-04-08', 3, 2),
-(4, 'Digital Literacy 101', 'Class', 'Seniors', '2025-04-09', 4, 4),
-(5, 'Board Game Night', 'Social', 'Everyone', '2025-04-10', 5, 1),
-(6, 'Art Hour', 'Activity', 'Kids', '2025-04-11', 6, 6),
-(7, 'Climate Change Panel', 'Seminar', 'Adults', '2025-04-12', 7, 9),
-(8, 'Yoga for Wellness', 'Health', 'Adults', '2025-04-13', 8, 10),
-(9, 'Coding for Beginners', 'Workshop', 'Teens', '2025-04-14', 9, 3),
-(10, 'Scholarship Info Session', 'Info', 'Students', '2025-04-15', 10, 7);
+
 
 INSERT INTO Attends (userID, eventID) VALUES
 (1, 1),
@@ -156,12 +168,8 @@ INSERT INTO Attends (userID, eventID) VALUES
 (7, 7),
 (8, 8),
 (9, 9),
-(10, 10),
-(1, 3),
-(2, 4),
-(3, 5),
-(4, 6),
-(5, 7);
+(10, 10);
+
 
 INSERT INTO Borrows (userID, itemID, borrowDate, dueDate, returnDate, fine, status)
 VALUES 

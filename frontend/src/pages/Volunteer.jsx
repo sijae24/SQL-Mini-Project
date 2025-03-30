@@ -108,8 +108,6 @@ const Volunteer = ({ user }) => {
           )}
         </div>
       </div>
-
-      {/* TODO: Fetch Personnel List */}
     </div>
   );
 };
