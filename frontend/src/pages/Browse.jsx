@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { BookOpenIcon, ArrowDownTrayIcon, ArrowUpTrayIcon, ClockIcon } from "@heroicons/react/24/outline";
+import { BookOpenIcon, ArrowDownTrayIcon, ClockIcon } from "@heroicons/react/24/outline";
 import ItemCard from "../components/ItemCard";
 
-const Browse = ({user}) => {
+const Browse = ({ user }) => {
   const [activeTab, setActiveTab] = useState("browse");
   const [items, setItems] = useState([]);
   const [borrowed, setBorrowed] = useState([]);
@@ -13,50 +13,52 @@ const Browse = ({user}) => {
   const [selectedType, setSelectedType] = useState("all");
 
   const userID = user?.userID;
-  
+
   // Function to fetch library items
-  const fetchItems = () => {
-    axios
-      .get("http://localhost:5000/library-items")
-      .then((res) => {
-        const sortedItems = res.data
-          .filter((item) => item.availability > 0)
-          .sort((a, b) => {
-            const typeOrder = { Book: 1, Magazine: 2, CD: 3, Journal: 4 };
-            const typeCompare = (typeOrder[a.itemType] || 5) - (typeOrder[b.itemType] || 5);
-            if (typeCompare !== 0) return typeCompare;
-            return a.title.localeCompare(b.title);
-          });
+  const fetchItems = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/library-items");
+      const sortedItems = res.data
+        .filter((item) => item.availability > 0)
+        .sort((a, b) => {
+          const typeOrder = { Book: 1, Magazine: 2, CD: 3, Journal: 4 };
+          const typeCompare = (typeOrder[a.itemType] || 5) - (typeOrder[b.itemType] || 5);
+          if (typeCompare !== 0) return typeCompare;
+          return a.title.localeCompare(b.title);
+        });
 
-        setItems(sortedItems);
-      })
-      .catch((err) => {
-        console.error("Error fetching library items:", err);
-      });
-  };
-
-  // Function to fetch borrowed items
-  const fetchBorrowed = () => {
-    axios
-      .get(`http://localhost:5000/borrowed-items/${userID}`)
-      .then((res) => setBorrowed(res.data))
-      .catch((err) => console.error("Error fetching borrowed items:", err));
-  };
-
-  // Function to fetch returned items
-  const fetchReturned = () => {
-    axios
-      .get(`http://localhost:5000/returned-items/${userID}`)
-      .then((res) => setReturned(res.data))
-      .catch((err) => console.error("Error fetching returned items:", err));
+      setItems(sortedItems);
+    } catch (err) {
+      console.error("Error fetching library items:", err);
+    }
   };
 
   useEffect(() => {
     fetchItems();
   }, []);
 
+  // Function to fetch borrowed items
+  const fetchBorrowed = async () => {
+    try {
+      const res = await axios.get(`http://localhost:5000/borrowed-items/${userID}`);
+      setBorrowed(res.data);
+    } catch (err) {
+      console.error("Error fetching borrowed items:", err);
+    }
+  };
+
+  // Function to fetch returned items
+  const fetchReturned = async () => {
+    try {
+      const res = await axios.get(`http://localhost:5000/returned-items/${userID}`);
+      setReturned(res.data);
+    } catch (err) {
+      console.error("Error fetching returned items:", err);
+    }
+  };
+
   useEffect(() => {
-    if (activeTab === "borrow" && userID) {
+    if (activeTab === "borrowed" && userID) {
       fetchBorrowed();
     } else if (activeTab === "returned" && userID) {
       fetchReturned();
@@ -64,7 +66,7 @@ const Browse = ({user}) => {
   }, [activeTab, userID]);
 
   // Function to handle item borrow
-  const handleBorrow = (itemID) => {
+  const handleBorrow = async (itemID) => {
     if (!userID || isBorrowing) {
       console.log("Duplicate borrow blocked");
       return;
@@ -72,75 +74,77 @@ const Browse = ({user}) => {
 
     setIsBorrowing(true);
 
-    axios
-      .post("http://localhost:5000/borrow", { userID, itemID })
-      .then((res) => {
-        console.log("✅ Borrowed successfully:", res.data);
-        alert(`✅ "${res.data.title}" borrowed successfully!`);
-        fetchItems();
-      })
-      .catch((err) => {
-        const message = err.response?.data?.message;
+    try {
+      const res = await axios.post("http://localhost:5000/borrow", { userID, itemID });
+      console.log("✅ Borrowed successfully:", res.data);
+      alert(`✅ "${res.data.title}" borrowed successfully!`);
+      fetchItems();
+    } catch (err) {
+      const message = err.response?.data?.message;
 
-        if (message === "You already borrowed this item.") {
-          alert("📚 You already borrowed this item.");
-        } else if (message === "Item not available") {
-          alert("🚫 This item is currently unavailable.");
-        } else {
-          alert("Borrow limit reached. You can only borrow up to 5 items.");
-        }
-      })
-      .finally(() => {
-        setTimeout(() => setIsBorrowing(false), 1000);
-      });
+      if (message === "You already borrowed this item.") {
+        alert("📚 You already borrowed this item.");
+      } else if (message === "Item not available") {
+        alert("🚫 This item is currently unavailable.");
+      } else {
+        alert("Borrow limit reached. You can only borrow up to 5 items.");
+      }
+    } finally {
+      setTimeout(() => setIsBorrowing(false), 1000);
+    }
   };
 
   // Function to handle item return
-  const handleReturn = (itemID) => {
-    axios.post("http://localhost:5000/return", { userID, itemID }).then((res) => {
+  const handleReturn = async (itemID) => {
+    try {
+      const res = await axios.post("http://localhost:5000/return", { userID, itemID });
       console.log("✅ Returned:", res.data);
       fetchItems();
       fetchBorrowed();
       fetchReturned();
       alert(`📘 "${res.data.title}" returned successfully!`);
-    });
+    } catch (err) {
+      console.error("Error returning item:", err);
+    }
   };
 
   // Function to filter library items based on search term and selected type
   const filterItems = (itemsToFilter) => {
-    return itemsToFilter.filter(item => {
-      // Check if any value in the item matches the search term 
-      const matchesSearch = searchTerm === "" || 
-        Object.values(item).some(value => {
-          if (typeof value === "string") {
-            return value.toLowerCase().includes(searchTerm.toLowerCase());
-          }
-          return false;
+    return itemsToFilter.filter((item) => {
+      // Check if any value in the item matches the search term
+      const matchesSearch =
+        searchTerm === "" ||
+        Object.values(item).some((value) => {
+          if (value === null) return false;
+          const valueString = typeof value === "string" ? value : String(value);
+          return valueString.toLowerCase().includes(searchTerm.toLowerCase());
         });
-      
+
       const matchesType = selectedType === "all" || item.itemType === selectedType;
-      
+
       return matchesSearch && matchesType;
     });
   };
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8 flex items-center">
+      <BookOpenIcon className="h-8 w-8 mr-2" /> Browse Library Items
+      </h1>
+      {/* Tabs for browse, borrow, return, and returned */}
       <div className="tabs tabs-boxed mb-8">
         <button className={`tab ${activeTab === "browse" ? "tab-active" : ""}`} onClick={() => setActiveTab("browse")}>
           <BookOpenIcon className="h-5 w-5 mr-2" /> Browse
         </button>
-        <button className={`tab ${activeTab === "borrow" ? "tab-active" : ""}`} onClick={() => setActiveTab("borrow")}>
+        <button className={`tab ${activeTab === "borrowed" ? "tab-active" : ""}`} onClick={() => setActiveTab("borrowed")}>
           <ArrowDownTrayIcon className="h-5 w-5 mr-2" /> Borrowed
-        </button>
-        <button className={`tab ${activeTab === "return" ? "tab-active" : ""}`} onClick={() => setActiveTab("return")}>
-          <ArrowUpTrayIcon className="h-5 w-5 mr-2" /> Return
         </button>
         <button className={`tab ${activeTab === "returned" ? "tab-active" : ""}`} onClick={() => setActiveTab("returned")}>
           <ClockIcon className="h-5 w-5 mr-2" /> Returned
         </button>
       </div>
 
+      {/* Search and type filters */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         <div className="flex-1">
           <input
@@ -172,25 +176,16 @@ const Browse = ({user}) => {
         </div>
       )}
 
-      {activeTab === "borrow" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filterItems(borrowed).length === 0 ? (
-            <p className="col-span-full text-center text-gray-500">No borrowed items.</p>
-          ) : (
-            filterItems(borrowed).map((item) => <ItemCard key={item.itemID} item={item} />)
-          )}
-        </div>
-      )}
-
-      {activeTab === "return" && (
+      {activeTab === "borrowed" && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filterItems(borrowed).length === 0 ? (
             <p className="col-span-full text-center text-gray-500">No borrowed items to return.</p>
           ) : (
-            filterItems(borrowed).map((item) => <ItemCard key={item.itemID} item={item} onReturn={handleReturn} showReturnButton={true} />)
+            filterItems(borrowed).map((item) => <ItemCard key={item.itemID} item={item} onReturn={handleReturn} />)
           )}
         </div>
       )}
+
 
       {activeTab === "returned" && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

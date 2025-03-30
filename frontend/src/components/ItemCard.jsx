@@ -1,8 +1,17 @@
-const ItemCard = ({ item, onBorrow, onReturn}) => {
+import { BookOpenIcon, FilmIcon, MusicalNoteIcon, NewspaperIcon, BookmarkIcon } from "@heroicons/react/24/outline";
+
+const ItemCard = ({ item, onBorrow, onReturn }) => {
   return (
     <div className="card bg-base-100 shadow-xl transition-transform hover:scale-105">
-      <div className="card-body items-center text-center">
-        <h2 className="card-title">{item.title}</h2>
+      <div className="card-body">
+      <div className="flex items-center gap-2">
+          {item.itemType === "Book" && <BookOpenIcon className="h-5 w-5 text-blue-500" />}
+          {item.itemType === "DVD" && <FilmIcon className="h-5 w-5 text-purple-500" />}
+          {item.itemType === "CD" && <MusicalNoteIcon className="h-5 w-5 text-green-500" />}
+          {item.itemType === "Magazine" && <NewspaperIcon className="h-5 w-5 text-red-500" />}
+          {item.itemType === "Journal" && <BookmarkIcon className="h-5 w-5 text-orange-500" />}
+          <h2 className="card-title">{item.title}</h2>
+        </div>
         {item.author && (
           <p>
             <strong>Author:</strong> {item.author}
@@ -36,6 +45,11 @@ const ItemCard = ({ item, onBorrow, onReturn}) => {
             <strong>Availability:</strong> {item.availability}
           </p>
         )}
+        {item.location && (
+          <p>
+            <strong>Location:</strong> {item.location}
+          </p>
+        )}
         {item.borrowDate && (
           <p>
             <strong>Borrowed:</strong> {item.borrowDate}
@@ -59,7 +73,7 @@ const ItemCard = ({ item, onBorrow, onReturn}) => {
           ))}
       </div>
       {(onBorrow || onReturn) && (
-        <div className="card-actions justify-center mb-4">
+        <div className="card-actions justify-end mr-4 mb-4">
           <button
             className="btn bg-[#8B0015] text-white hover:bg-secondary"
             onClick={() => (onBorrow ? onBorrow(item.itemID) : onReturn(item.itemID))}
