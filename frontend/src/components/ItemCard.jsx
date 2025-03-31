@@ -32,6 +32,11 @@ const ItemCard = ({ item, onBorrow, onReturn }) => {
             <strong>ISSN:</strong> {item.ISSN}
           </p>
         )}
+        {item.issueNumber && (
+          <p>
+            <strong>Issue Number:</strong> {item.issueNumber}
+          </p>
+        )}
         {item.trackCount && (
           <p>
             <strong>Tracks:</strong> {item.trackCount}

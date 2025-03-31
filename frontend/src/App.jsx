@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Browse from "./pages/Browse";
 import Events from "./pages/Events";
 import Volunteer from "./pages/Volunteer";
+import Donate from "./pages/Donate";
 import Help from "./pages/Help";
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
             <Route path="/browse" element={user ? <Browse user={user} /> : <Navigate to="/login" />} />
             <Route path="/events" element={user ? <Events user={user} /> : <Navigate to="/login" />} />
             <Route path="/volunteer" element={user ? <Volunteer user={user} /> : <Navigate to="/login" />} />
+            <Route path="/donate" element={user ? <Donate user={user} /> : <Navigate to="/login" />} />
             <Route path="/help" element={user ? <Help user={user} /> : <Navigate to="/login" />} />
           </Routes>
         </div>

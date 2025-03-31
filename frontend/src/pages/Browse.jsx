@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { BookOpenIcon, ArrowDownTrayIcon, ClockIcon } from "@heroicons/react/24/outline";
+import { BookOpenIcon, ArrowDownTrayIcon, ClockIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 import ItemCard from "../components/ItemCard";
 
 const Browse = ({ user }) => {
@@ -9,6 +9,8 @@ const Browse = ({ user }) => {
   const [borrowed, setBorrowed] = useState([]);
   const [returned, setReturned] = useState([]);
   const [isBorrowing, setIsBorrowing] = useState(false);
+  const [borrowSuccess, setBorrowSuccess] = useState(false);
+  const [returnSuccess, setReturnSuccess] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("all");
 
@@ -77,7 +79,8 @@ const Browse = ({ user }) => {
     try {
       const res = await axios.post("http://localhost:5000/borrow", { userID, itemID });
       console.log("✅ Borrowed successfully:", res.data);
-      alert(`✅ "${res.data.title}" borrowed successfully!`);
+      setBorrowSuccess(res.data.title);
+      setTimeout(() => setBorrowSuccess(false), 3000);
       fetchItems();
     } catch (err) {
       const message = err.response?.data?.message;
@@ -99,10 +102,11 @@ const Browse = ({ user }) => {
     try {
       const res = await axios.post("http://localhost:5000/return", { userID, itemID });
       console.log("✅ Returned:", res.data);
+      setReturnSuccess(res.data.title);
+      setTimeout(() => setReturnSuccess(false), 3000);
       fetchItems();
       fetchBorrowed();
       fetchReturned();
-      alert(`📘 "${res.data.title}" returned successfully!`);
     } catch (err) {
       console.error("Error returning item:", err);
     }
@@ -110,7 +114,7 @@ const Browse = ({ user }) => {
 
   // Function to filter library items based on search term and selected type
   const filterItems = (itemsToFilter) => {
-    //  Check if any value in the item matches 
+    //  Check if any value in the item matches
     return itemsToFilter.filter(
       (item) =>
         (searchTerm === "" ||
@@ -124,6 +128,25 @@ const Browse = ({ user }) => {
       <h1 className="text-3xl font-bold mb-8 flex items-center">
         <BookOpenIcon className="h-8 w-8 mr-2" /> Browse Library Items
       </h1>
+
+      {borrowSuccess && (
+        <div className="alert alert-success mb-6">
+          <div className="flex-1">
+            <CheckCircleIcon className="h-6 w-6" />
+            <label>Successfully borrowed "{borrowSuccess}"! Due in 7 days.</label>
+          </div>
+        </div>
+      )}
+      
+      {returnSuccess && (
+        <div className="alert alert-success mb-6">
+          <div className="flex-1">
+            <CheckCircleIcon className="h-5 w-5 mr-2" />
+            <label>Successfully returned "{returnSuccess}"! Thank you.</label>
+          </div>
+        </div>
+      )}
+
       {/* Tabs for browse, borrow, return, and returned */}
       <div className="tabs tabs-boxed mb-8">
         <button className={`tab ${activeTab === "browse" ? "tab-active" : ""}`} onClick={() => setActiveTab("browse")}>

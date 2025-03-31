@@ -1,5 +1,4 @@
 -- Trigger to auto-set arrivalDate for FutureItem donations
-
 CREATE TRIGGER SetArrivalDateOnDonation
 AFTER INSERT ON Donates
 WHEN (SELECT itemType FROM LibraryItem WHERE itemID = NEW.itemID) IS NOT NULL

@@ -7,6 +7,8 @@ const Events = ({ user }) => {
   const [events, setEvents] = useState([]);
   const [registeredEvents, setRegisteredEvents] = useState([]);
   const [isRegistering, setIsRegistering] = useState(false);
+  const [registerSuccess, setRegisterSuccess] = useState(false);
+  const [unregisterSuccess, setUnregisterSuccess] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("all");
 
@@ -50,7 +52,8 @@ const Events = ({ user }) => {
         eventID,
       });
       setRegisteredEvents([...registeredEvents, eventID]);
-      alert("Successfully registered for event!");
+      setRegisterSuccess(true);
+      setTimeout(() => setRegisterSuccess(false), 3000);
     } catch (error) {
       alert(error.response?.data?.message || "Registration failed");
     } finally {
@@ -69,7 +72,8 @@ const Events = ({ user }) => {
         eventID,
       });
       setRegisteredEvents(registeredEvents.filter((id) => id !== eventID));
-      alert("Successfully unregistered from event");
+      setUnregisterSuccess(true);
+      setTimeout(() => setUnregisterSuccess(false), 3000);
     } catch (error) {
       alert("Unregistration failed");
     } finally {
@@ -101,6 +105,25 @@ const Events = ({ user }) => {
       <h1 className="text-3xl font-bold mb-8 flex items-center">
         <CalendarIcon className="h-8 w-8 mr-2" /> Find Events
       </h1>
+
+      {registerSuccess && (
+          <div className="alert alert-success mb-6">
+          <div className="flex-1">
+            <CheckCircleIcon className="h-6 w-6" />
+            <label>Successfully registered for the event!</label>
+          </div>
+        </div>
+      )}
+
+      {unregisterSuccess && (
+          <div className="alert alert-success mb-6">
+          <div className="flex-1">
+            <CheckCircleIcon className="h-6 w-6" />
+            <label>Successfully unregistered from the event!</label>
+          </div>
+        </div>
+      )}
+
       {/* Tabs for events */}
       <div className="tabs tabs-boxed mb-8">
         <button className={`tab ${activeTab === "all" ? "tab-active" : ""}`} onClick={() => setActiveTab("all")}>
