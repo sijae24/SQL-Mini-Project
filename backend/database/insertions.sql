@@ -27,7 +27,6 @@ INSERT INTO Personnel (userID, position, salary) VALUES
 (9, 'Volunteer', 0),
 (10, 'Assistant Manager', 49000);
 
-
 INSERT INTO LibraryItem (itemID, title, itemType, availability, location, ISBN, author, artist, trackCount, issueNumber, ISSN) VALUES
 (1, 'Pride and Prejudice', 'Book', 3, 'Shelf A1', '9780141199078', 'Jane Austen', NULL, NULL, NULL, NULL),
 (2, 'Thriller', 'CD', 2, 'Shelf B2', NULL, NULL, 'Michael Jackson', 9, NULL, NULL),
@@ -81,6 +80,7 @@ INSERT INTO Donates (donationID, userID, itemID, donationDate) VALUES
 (18, 2, 18, '2025-04-07');
 
 
+
 INSERT INTO Room (roomID, roomName, capacity) VALUES
 (1, 'Main Hall', 100),
 (2, 'Tech Room', 40),
@@ -93,25 +93,8 @@ INSERT INTO Room (roomID, roomName, capacity) VALUES
 (9, 'VR Lab', 12),
 (10, 'Quiet Room', 10);
 
-INSERT INTO Event (eventID, eventName, eventType, audience, date, personnelID, roomID) VALUES
-(1, 'Intro to SQL', 'Workshop', 'Students', '2025-04-10', 1, 2),
-(2, 'Data Science Meetup', 'Talk', 'General Public', '2025-04-12', 3, 1),
-(3, 'Resume Building Session', 'Workshop', 'Job Seekers', '2025-04-14', 6, 5),
-(4, 'Python Bootcamp', 'Training', 'Beginners', '2025-04-15', 2, 3),
-(5, 'Library Tech Tour', 'Tour', 'All Ages', '2025-04-18', 5, 9),
-(6, 'AI in Everyday Life', 'Seminar', 'Tech Enthusiasts', '2025-04-20', 10, 4),
-(7, 'Mindfulness & Reading', 'Session', 'Adults', '2025-04-22', 4, 10),
-(8, 'Book Club: Fiction Night', 'Discussion', 'Members', '2025-04-25', 7, 8),
-(9, 'Kids Coding Hour', 'Activity', 'Children', '2025-04-26', 1, 6),
-(10, 'Ethics of AI', 'Panel', 'Academics', '2025-04-28', 3, 7),
-(11, 'Digital Literacy 101', 'Class', 'Seniors', '2025-04-09', 4, 4),
-(12, 'Board Game Night', 'Social', 'Everyone', '2025-04-10', 5, 1),
-(13, 'Art Hour', 'Activity', 'Kids', '2025-04-11', 6, 6),
-(14, 'Climate Change Panel', 'Seminar', 'Adults', '2025-04-12', 7, 9),
-(15, 'Coding for Beginners', 'Workshop', 'Teens', '2025-04-14', 9, 3);
 
 INSERT INTO HelpRequest (requestID, userID, request, status) VALUES
-(1, 2, 'Need help with finding academic journals.', 'Open'),
 (2, 5, 'Printer on 2nd floor is not working.', 'Resolved'),
 (3, 7, 'How do I renew a book online?', 'Open'),
 (4, 6, 'Room booking system not responding.', 'In Progress'),
@@ -120,20 +103,33 @@ INSERT INTO HelpRequest (requestID, userID, request, status) VALUES
 (7, 4, 'Lost my library card. How do I replace it?', 'Open'),
 (8, 9, 'Is there a quiet space for study?', 'Resolved'),
 (9, 10, 'Need assistance uploading a document.', 'In Progress'),
-(10, 1, 'What is the fine for a lost book?', 'Open');
+(10, 1, 'What is the fine for a lost book?', 'Open'),
+(11, 2, 'Need help with finding academic journals.', 'Open');
 
+INSERT INTO Event (eventID, eventName, eventType, audience, date, personnelID, roomID) VALUES
+(1, 'Resume Workshop', 'Workshop', 'Students', '2025-04-05', 1, 1),
+(2, 'Digital Research Skills', 'Workshop', 'Teens', '2025-04-06', 2, 2),
+(3, 'Author Lecture: Sci-Fi Futures', 'Lecture', 'Adults', '2025-04-07', 3, 3),
+(4, 'Library Orientation Lecture', 'Lecture', 'Everyone', '2025-04-08', 4, 4),
+(5, 'Climate Change & Books Seminar', 'Seminar', 'Adults', '2025-04-09', 5, 5),
+(6, 'Academic Writing Seminar', 'Seminar', 'Students', '2025-04-10', 6, 6),
+(7, 'Annual Library Innovation Conf.', 'Conference', 'Everyone', '2025-04-11', 7, 7),
+(8, 'Youth Literacy Conference', 'Conference', 'Teens', '2025-04-12', 8, 8),
+(9, 'Data Literacy Workshop', 'Workshop', 'Adults', '2025-04-13', 9, 9),
+(10, 'Publishing Trends Conference', 'Conference', 'Adults', '2025-04-14', 10, 10);
 
-INSERT INTO Borrows (borrowID, userID, itemID, borrowDate, dueDate, returnDate, fine, status) VALUES
-(1, 1, 1, '2025-03-10', '2025-03-17', '2025-03-16', 0, 'returned'),
-(2, 2, 2, '2025-03-20', '2025-03-27', '2025-03-29', 1.0, 'returned late'),
-(3, 3, 6, '2025-03-22', '2025-03-29', NULL, 0, 'borrowed'),
-(4, 4, 7, '2025-03-18', '2025-03-25', '2025-03-24', 0, 'returned'),
-(5, 5, 1, '2025-03-21', '2025-03-28', NULL, 0, 'borrowed'),
-(6, 6, 2, '2025-03-22', '2025-03-29', NULL, 0, 'borrowed'),
-(7, 7, 6, '2025-03-15', '2025-03-22', '2025-03-23', 0.5, 'returned late'),
-(8, 8, 1, '2025-03-20', '2025-03-27', NULL, 0, 'borrowed'),
-(9, 9, 7, '2025-03-10', '2025-03-17', '2025-03-17', 0, 'returned'),
-(10, 10, 6, '2025-03-12', '2025-03-19', '2025-03-22', 1.5, 'returned late');
+INSERT INTO Borrows (userID, itemID, borrowDate, dueDate, returnDate, fine, status)
+VALUES 
+  (1, 1, '2024-03-01', '2024-03-10', NULL, 0, 'borrowed'),
+  (2, 3, '2025-02-15', '2025-02-28', '2025-03-05', 3.5, 'returned'),
+  (3, 2, '2025-03-20', '2025-04-03', NULL, 0, 'borrowed'),
+  (4, 6, '2024-12-01', '2024-12-15', '2025-03-01', 38.0, 'returned'),
+  (5, 10, '2025-03-28', '2025-04-11', NULL, 0, 'borrowed'),
+  (6, 4, '2025-03-10', '2025-03-24', '2025-03-23', 0, 'returned'),
+  (7, 5, '2025-03-01', '2025-03-15', '2025-03-16', 0.5, 'returned'),
+  (8, 11, '2025-03-25', '2025-04-08', NULL, 0, 'borrowed'),
+  (9, 7, '2025-03-05', '2025-03-19', '2025-03-18', 0, 'returned'),
+  (10, 15, '2025-03-27', '2025-04-10', NULL, 0, 'borrowed');
 
 
 
@@ -147,4 +143,9 @@ INSERT INTO Attends (userID, eventID) VALUES
 (7, 7),
 (8, 8),
 (9, 9),
-(10, 10);
+(10, 10),
+(1, 3),
+(2, 4),
+(3, 5),
+(4, 6),
+(5, 7);
