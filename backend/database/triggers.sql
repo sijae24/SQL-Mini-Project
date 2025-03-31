@@ -43,7 +43,7 @@ FOR EACH ROW
 WHEN NEW.returnDate > NEW.dueDate
 BEGIN
     UPDATE Borrows
-    SET fine = (JULIANDAY(NEW.returnDate) - JULIANDAY(NEW.dueDate)) * 0.50
+    SET fine = (JULIANDAY(NEW.returnDate) - JULIANDAY(NEW.dueDate)) * 0.50, status = "returned late"
     WHERE borrowID = NEW.borrowID;
 END;
 
