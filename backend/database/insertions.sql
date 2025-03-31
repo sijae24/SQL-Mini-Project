@@ -118,19 +118,17 @@ INSERT INTO Event (eventID, eventName, eventType, audience, date, personnelID, r
 (9, 'Data Literacy Workshop', 'Workshop', 'Adults', '2025-04-13', 9, 9),
 (10, 'Publishing Trends Conference', 'Conference', 'Adults', '2025-04-14', 10, 10);
 
-INSERT INTO Borrows (userID, itemID, borrowDate, dueDate, returnDate, fine, status)
-VALUES 
-  (1, 1, '2024-03-01', '2024-03-10', NULL, 0, 'borrowed'),
-  (2, 3, '2025-02-15', '2025-02-28', '2025-03-05', 3.5, 'returned'),
-  (3, 2, '2025-03-20', '2025-04-03', NULL, 0, 'borrowed'),
-  (4, 6, '2024-12-01', '2024-12-15', '2025-03-01', 38.0, 'returned'),
-  (5, 10, '2025-03-28', '2025-04-11', NULL, 0, 'borrowed'),
-  (6, 4, '2025-03-10', '2025-03-24', '2025-03-23', 0, 'returned'),
-  (7, 5, '2025-03-01', '2025-03-15', '2025-03-16', 0.5, 'returned'),
-  (8, 11, '2025-03-25', '2025-04-08', NULL, 0, 'borrowed'),
-  (9, 7, '2025-03-05', '2025-03-19', '2025-03-18', 0, 'returned'),
-  (10, 15, '2025-03-27', '2025-04-10', NULL, 0, 'borrowed');
-
+INSERT INTO Borrows (borrowID, userID, itemID, borrowDate, dueDate, returnDate, fine, status) VALUES
+(1, 1, 1, '2025-03-10', '2025-03-17', '2025-03-16', 0, 'returned'),
+(2, 2, 2, '2025-03-20', '2025-03-27', '2025-03-29', 1.0, 'returned late'),
+(3, 3, 6, '2025-03-22', '2025-03-29', NULL, 0, 'borrowed'),
+(4, 4, 7, '2025-03-18', '2025-03-25', '2025-03-24', 0, 'returned'),
+(5, 5, 1, '2025-03-21', '2025-03-28', NULL, 0, 'borrowed'),
+(6, 6, 2, '2025-03-22', '2025-03-29', NULL, 0, 'borrowed'),
+(7, 7, 6, '2025-03-15', '2025-03-22', '2025-03-23', 0.5, 'returned late'),
+(8, 8, 1, '2025-03-20', '2025-03-27', NULL, 0, 'borrowed'),
+(9, 9, 7, '2025-03-10', '2025-03-17', '2025-03-17', 0, 'returned'),
+(10, 10, 6, '2025-03-12', '2025-03-19', '2025-03-22', 1.5, 'returned late');;
 
 
 INSERT INTO Attends (userID, eventID) VALUES
