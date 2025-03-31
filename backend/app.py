@@ -256,7 +256,7 @@ def borrow_item():
         cursor.execute(
             """
             INSERT INTO Borrows (userID, itemID, borrowDate, dueDate, status)
-            VALUES (?, ?, DATE('now'), DATE('now', '+14 days'), 'borrowed')
+            VALUES (?, ?, DATE('now'), DATE('now', '+7 days'), 'borrowed')
         """,
             (user_id, item_id),
         )
