@@ -1,10 +1,10 @@
 -- User Table
 
 CREATE TABLE User (
-    userID INTEGER PRIMARY KEY AUTOINCREMENT,
+    userID INTEGER PRIMARY KEY,
     userName TEXT NOT NULL,
-    phoneNumber TEXT UNIQUE CHECK (length(phoneNumber) >= 10),
-    email TEXT UNIQUE CHECK (email LIKE '%@%.%' AND length(email) >= 5)
+    phoneNumber TEXT UNIQUE NOT NULL CHECK (length(phoneNumber) >= 10),
+    email TEXT UNIQUE NOT NULL CHECK (email LIKE '%@%.%' AND length(email) >= 5)
 );
 
 
@@ -19,7 +19,7 @@ CREATE TABLE Personnel (
         NOT (position = 'volunteer' AND salary != 0)
     )
 );
-
+-- LibraryItem Table
 CREATE TABLE LibraryItem (
     itemID INTEGER PRIMARY KEY,
     title TEXT NOT NULL,
@@ -35,6 +35,7 @@ CREATE TABLE LibraryItem (
     ISSN TEXT UNIQUE                 -- for Journals
 );
 
+-- Donates Table
 CREATE TABLE Donates (
     donationID INTEGER PRIMARY KEY,
     userID INTEGER,
@@ -43,6 +44,7 @@ CREATE TABLE Donates (
     FOREIGN KEY (userID) REFERENCES User(userID),
     FOREIGN KEY (itemID) REFERENCES LibraryItem(itemID)
 );
+
 
 
 -- Borrows Table 
@@ -107,6 +109,4 @@ CREATE TABLE FutureItem (
     FOREIGN KEY (itemID) REFERENCES LibraryItem(itemID)
 );
 
-UPDATE FutureItem
-SET arrivalDate = DATE('now', '-1 day')
-WHERE itemID = 10;  -- replace with the item you want to test
+
