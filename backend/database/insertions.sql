@@ -95,7 +95,6 @@ INSERT INTO Room (roomID, roomName, capacity) VALUES
 
 
 INSERT INTO HelpRequest (requestID, userID, request, status) VALUES
-(1, 2, 'Need help with finding academic journals.', 'Open'),
 (2, 5, 'Printer on 2nd floor is not working.', 'Resolved'),
 (3, 7, 'How do I renew a book online?', 'Open'),
 (4, 6, 'Room booking system not responding.', 'In Progress'),
@@ -104,7 +103,8 @@ INSERT INTO HelpRequest (requestID, userID, request, status) VALUES
 (7, 4, 'Lost my library card. How do I replace it?', 'Open'),
 (8, 9, 'Is there a quiet space for study?', 'Resolved'),
 (9, 10, 'Need assistance uploading a document.', 'In Progress'),
-(10, 1, 'What is the fine for a lost book?', 'Open');
+(10, 1, 'What is the fine for a lost book?', 'Open'),
+(11, 2, 'Need help with finding academic journals.', 'Open');
 
 INSERT INTO Event (eventID, eventName, eventType, audience, date, personnelID, roomID) VALUES
 (1, 'Resume Workshop', 'Workshop', 'Students', '2025-04-05', 1, 1),
