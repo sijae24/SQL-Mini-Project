@@ -16,34 +16,43 @@ def login():
     email = data.get("email")
     name = data.get("name")
 
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
+    try:
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
 
-    # Check if user exists with matching email and name
-    cursor.execute("SELECT userID, userName, email FROM User WHERE email = ? AND userName = ?", (email, name))
-    user = cursor.fetchone()
-    conn.close()
+        # Check if user exists with matching email and name
+        cursor.execute("SELECT userID, userName, email FROM User WHERE email = ? AND userName = ?", (email, name))
+        user = cursor.fetchone()
+        conn.close()
 
-    # If user exists, return user details
-    if user:
-        return jsonify({"success": True, "user": {"userID": user[0], "name": user[1], "email": user[2]}})
-    else:
-        return jsonify({"success": False, "message": "Invalid credentials"}), 401
+        # If user exists, return user details
+        if user:
+            return jsonify({"success": True, "user": {"userID": user[0], "name": user[1], "email": user[2]}})
+        else:
+            return jsonify({"success": False, "message": "Invalid credentials"}), 401
+
+    except Exception as e:
+        conn.close()
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/register", methods=["POST"])
 def register():
-    data = request.get_json()
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO User (userName, phoneNumber, email) VALUES (?, ?, ?)",
-        (data["userName"], data["phoneNumber"], data["email"]),
-    )
-    user_id = cursor.lastrowid
-    conn.commit()
-    conn.close()
-    return jsonify({"message": "User added successfully", "userID": user_id}), 201
+    try:
+        data = request.get_json()
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO User (userName, phoneNumber, email) VALUES (?, ?, ?)",
+            (data["userName"], data["phoneNumber"], data["email"]),
+        )
+        user_id = cursor.lastrowid
+        conn.commit()
+        conn.close()
+        return jsonify({"message": "User added successfully", "userID": user_id}), 201
+    except Exception as e:
+        conn.close()
+        return jsonify({"error": str(e)}), 500
 
 
 # -------------------- Personnel --------------------
@@ -372,6 +381,7 @@ def get_future_items():
         })
 
     return jsonify(future_items)
+
 @app.route("/add-future-item", methods=["POST"])
 def add_future_item():
     data = request.get_json()
@@ -396,6 +406,7 @@ def add_future_item():
     conn.close()
 
     return jsonify({"message": "Item added successfully", "itemID": new_id}), 201
+
 @app.route("/donate-item", methods=["POST"])
 def donate_item():
     data = request.get_json()
@@ -451,11 +462,6 @@ def process_arrivals():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-
-
-
-
 
 
 # -------------------- EVENTS --------------------

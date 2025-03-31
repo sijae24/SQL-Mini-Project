@@ -11,6 +11,7 @@ const Login = ({ setUser }) => {
     email: "",
     phone: "",
   });
+  const [error, setError] = useState(null);
 
   const navigate = useNavigate();
 
@@ -29,11 +30,12 @@ const Login = ({ setUser }) => {
         localStorage.setItem("user", JSON.stringify(response.data.user));
         navigate("/");
       } else {
-        alert(response.data.message || "Invalid credentials");
+        setError(response.data.message || "Invalid credentials");
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert("Login failed. Please try again.");
+      setError("Login failed. Please try again. Use valid credentials. Username and email are case sensitive.");
+      setTimeout(() => setError(null), 5000);
     }
   };
 
@@ -49,14 +51,18 @@ const Login = ({ setUser }) => {
 
       // If registration is successful, show a success message
       if (response.data.message === "User added successfully") {
-        alert("Registration successful! Please login.");
+        setError(null);
+        // alert("Registration successful! Please login.");
         setIsRegistering(false);
         setEmail(registerData.email);
         setName(registerData.name);
+      } else {
+        setError(response.data.message);
       }
     } catch (error) {
       console.error("Registration error:", error);
-      alert("Registration failed. Please try again.");
+      setError("Registration failed. Please try again. Username and email are case sensitive. Phone number must be at least 10 digits.");
+      setTimeout(() => setError(null), 5000);
     }
   };
 
@@ -107,6 +113,23 @@ const Login = ({ setUser }) => {
                 <button type="button" className="btn btn-ghost hover:bg-base-100 w-full" onClick={() => setIsRegistering(true)}>
                   Need an account? Register
                 </button>
+
+                {/* Error message */}
+                {error && (
+                  <div className="alert alert-error shadow-lg mt-4">
+                    <div>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      <span>{error}</span>
+                    </div>
+                  </div>
+                )}
               </form>
             </>
           ) : (
@@ -157,6 +180,21 @@ const Login = ({ setUser }) => {
                 <button type="button" className="btn btn-ghost hover:bg-base-100 w-full" onClick={() => setIsRegistering(false)}>
                   Already have an account? Login
                 </button>
+                {error && (
+                  <div className="alert alert-error shadow-lg mt-4">
+                    <div>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current flex-shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                      </svg>
+                      <span>{error}</span>
+                    </div>
+                  </div>
+                )}
               </form>
             </>
           )}
@@ -167,3 +205,4 @@ const Login = ({ setUser }) => {
 };
 
 export default Login;
+
