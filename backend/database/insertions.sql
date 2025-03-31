@@ -1,4 +1,4 @@
-INSERT INTO "User" (userID, userName, phoneNumber, email) VALUES
+INSERT INTO User (userID, userName, phoneNumber, email) VALUES
 (1, 'LeBron James', '6041123457', 'LeBron.James@gmail.com'),
 (2, 'Evan Smith', '6045632134', 'evan.smith@gmail.com'),
 (3, 'Jake Love', '6042103125', 'jake.love@yahoo.com'),
@@ -84,18 +84,6 @@ INSERT INTO Room (roomID, roomName, capacity) VALUES
 (9, 'VR Lab', 12),
 (10, 'Quiet Room', 10);
 
-INSERT INTO Event (eventID, eventName, eventType, audience, date, personnelID, roomID) VALUES
-(1, 'Intro to SQL', 'Workshop', 'Students', '2025-04-10', 1, 2),
-(2, 'Data Science Meetup', 'Talk', 'General Public', '2025-04-12', 3, 1),
-(3, 'Resume Building Session', 'Workshop', 'Job Seekers', '2025-04-14', 6, 5),
-(4, 'Python Bootcamp', 'Training', 'Beginners', '2025-04-15', 2, 3),
-(5, 'Library Tech Tour', 'Tour', 'All Ages', '2025-04-18', 5, 9),
-(6, 'AI in Everyday Life', 'Seminar', 'Tech Enthusiasts', '2025-04-20', 10, 4),
-(7, 'Mindfulness & Reading', 'Session', 'Adults', '2025-04-22', 4, 10),
-(8, 'Book Club: Fiction Night', 'Discussion', 'Members', '2025-04-25', 7, 8),
-(9, 'Kids Coding Hour', 'Activity', 'Children', '2025-04-26', 1, 6),
-(10, 'Ethics of AI', 'Panel', 'Academics', '2025-04-28', 3, 7);
-
 INSERT INTO HelpRequest (requestID, userID, request, status) VALUES
 (1, 2, 'Need help with finding academic journals.', 'Open'),
 (2, 5, 'Printer on 2nd floor is not working.', 'Resolved'),
@@ -109,30 +97,6 @@ INSERT INTO HelpRequest (requestID, userID, request, status) VALUES
 (10, 1, 'What is the fine for a lost book?', 'Open');
 
 
-INSERT INTO Borrows (borrowID, userID, itemID, borrowDate, dueDate, returnDate, fine, status) VALUES
-(1, 1, 1, '2025-03-10', '2025-03-17', '2025-03-16', 0, 'returned'),
-(2, 2, 2, '2025-03-20', '2025-03-27', '2025-03-29', 1.0, 'returned late'),
-(3, 3, 6, '2025-03-22', '2025-03-29', NULL, 0, 'borrowed'),
-(4, 4, 7, '2025-03-18', '2025-03-25', '2025-03-24', 0, 'returned'),
-(5, 5, 1, '2025-03-21', '2025-03-28', NULL, 0, 'borrowed'),
-(6, 6, 2, '2025-03-22', '2025-03-29', NULL, 0, 'borrowed'),
-(7, 7, 6, '2025-03-15', '2025-03-22', '2025-03-23', 0.5, 'returned late'),
-(8, 8, 1, '2025-03-20', '2025-03-27', NULL, 0, 'borrowed'),
-(9, 9, 7, '2025-03-10', '2025-03-17', '2025-03-17', 0, 'returned'),
-(10, 10, 6, '2025-03-12', '2025-03-19', '2025-03-22', 1.5, 'returned late');
-
-
-INSERT INTO Room (roomID, roomName, capacity) VALUES
-(1, 'Room A', 25),
-(2, 'Room B', 40),
-(3, 'Room C', 30),
-(4, 'Digital Lab', 20),
-(5, 'Conference Hall', 100),
-(6, 'Children Area', 15),
-(7, 'AV Room', 35),
-(8, 'Study Zone 1', 12),
-(9, 'Seminar Room', 50),
-(10, 'Lecture Hall', 80);
 
 INSERT INTO Event (eventID, eventName, eventType, audience, date, personnelID, roomID) VALUES
 (1, 'Story Time', 'Kids', 'Children', '2025-04-05', 1, 6),
@@ -165,7 +129,7 @@ INSERT INTO Attends (userID, eventID) VALUES
 
 INSERT INTO Borrows (userID, itemID, borrowDate, dueDate, returnDate, fine, status)
 VALUES 
-  (1, 1, '2024-03-01', '2024-03-10', NULL, 'borrowed'),
+  (1, 1, '2024-03-01', '2024-03-10', NULL, 0, 'borrowed'),
   (2, 3, '2025-02-15', '2025-02-28', '2025-03-05', 3.5, 'returned'),
   (3, 2, '2025-03-20', '2025-04-03', NULL, 0, 'borrowed'),
   (4, 6, '2024-12-01', '2024-12-15', '2025-03-01', 38.0, 'returned'),
@@ -177,3 +141,5 @@ VALUES
   (10, 15, '2025-03-27', '2025-04-10', NULL, 0, 'borrowed');
 
 
+SELECT * FROM LibraryItem
+WHERE itemID NOT IN (SELECT itemID FROM FutureItem)

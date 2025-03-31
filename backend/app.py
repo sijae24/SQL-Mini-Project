@@ -135,7 +135,7 @@ def get_library_items():
             li.itemID, li.title, li.itemType, li.availability, li.location, 
             li.ISBN, li.author, li.artist, li.trackCount, li.issueNumber, li.ISSN
         FROM LibraryItem li
-        WHERE li.itemID NOT IN (SELECT itemID FROM FutureItem)
+        WHERE li.availability > 0
         ORDER BY 
             CASE li.itemType
                 WHEN 'Book' THEN 1
@@ -332,6 +332,115 @@ def get_returned_items(user_id):
 
 # -------------------- ATTENDS --------------------
 
+# -------------------- DONATES --------------------
+
+
+@app.route("/future-items", methods=["GET"])
+def get_future_items():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT f.itemID, f.arrivalDate, l.title, l.itemType 
+        FROM FutureItem f
+        JOIN LibraryItem l ON f.itemID = l.itemID
+        ORDER BY f.arrivalDate
+    """)
+    rows = cursor.fetchall()
+    conn.close()
+
+    future_items = []
+    for row in rows:
+        future_items.append({
+            "itemID": row[0],
+            "arrivalDate": row[1],
+            "title": row[2],
+            "itemType": row[3]
+        })
+
+    return jsonify(future_items)
+@app.route("/add-future-item", methods=["POST"])
+def add_future_item():
+    data = request.get_json()
+
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO LibraryItem (title, itemType, availability, location, ISBN, author, artist, trackCount, issueNumber, ISSN)
+        VALUES (?, ?, 0, 'TBD', ?, ?, ?, ?, ?, ?)
+    """, (
+        data.get("title"),
+        data.get("itemType"),
+        data.get("ISBN"),
+        data.get("author"),
+        data.get("artist"),
+        data.get("trackCount"),
+        data.get("issueNumber"),
+        data.get("ISSN")
+    ))
+    new_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message": "Item added successfully", "itemID": new_id}), 201
+@app.route("/donate-item", methods=["POST"])
+def donate_item():
+    data = request.get_json()
+    user_id = data.get("userID")
+    item_id = data.get("itemID")
+
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO Donates (userID, itemID, donationDate)
+        VALUES (?, ?, DATE('now'))
+    """, (user_id, item_id))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message": "Donation recorded"}), 201
+
+from datetime import datetime
+
+@app.route("/process-arrivals", methods=["POST"])
+def process_arrivals():
+    try:
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+
+        today = datetime.now().date()
+
+        # Get all items from FutureItem where arrivalDate <= today
+        cursor.execute("""
+            SELECT itemID FROM FutureItem
+            WHERE arrivalDate <= DATE('now')
+        """)
+        arrivals = cursor.fetchall()
+
+        if not arrivals:
+            conn.close()
+            return jsonify({"message": "No items ready to be processed today."})
+
+        # For each item: increase availability and remove from FutureItem
+        for (item_id,) in arrivals:
+            cursor.execute("""
+                UPDATE LibraryItem
+                SET availability = availability + 1
+                WHERE itemID = ?
+            """, (item_id,))
+
+            cursor.execute("DELETE FROM FutureItem WHERE itemID = ?", (item_id,))
+
+        conn.commit()
+        conn.close()
+
+        return jsonify({
+            "message": f"{len(arrivals)} item(s) processed and moved to available.",
+            "processedItemIDs": [item[0] for item in arrivals]
+        })
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/", methods=["GET"])
 def index():

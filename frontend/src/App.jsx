@@ -8,6 +8,8 @@ import Browse from "./pages/Browse";
 import Events from "./pages/Events";
 import Volunteer from "./pages/Volunteer";
 import Help from "./pages/Help";
+import Donate from "./pages/Donate"; 
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -24,6 +26,7 @@ function App() {
             <Route path="/events" element={user ? <Events user={user} /> : <Navigate to="/login" />} />
             <Route path="/volunteer" element={user ? <Volunteer user={user} /> : <Navigate to="/login" />} />
             <Route path="/help" element={user ? <Help user={user} /> : <Navigate to="/login" />} />
+            <Route path="/donate" element={user ? <Donate user={user} /> : <Navigate to="/login" />} />
           </Routes>
         </div>
       </div>

@@ -107,4 +107,6 @@ CREATE TABLE FutureItem (
     FOREIGN KEY (itemID) REFERENCES LibraryItem(itemID)
 );
 
-
+UPDATE FutureItem
+SET arrivalDate = DATE('now', '-1 day')
+WHERE itemID = 10;  -- replace with the item you want to test
