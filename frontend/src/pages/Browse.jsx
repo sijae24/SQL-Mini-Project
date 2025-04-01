@@ -84,7 +84,7 @@ const Browse = ({ user }) => {
       const res = await axios.post("http://localhost:5000/borrow", { userID, itemID });
       console.log("✅ Borrowed successfully:", res.data);
       setBorrowSuccess(res.data.title);
-      setTimeout(() => setBorrowSuccess(false), 3000);
+      setTimeout(() => setBorrowSuccess(false), 5000);
       fetchItems();
     } catch (err) {
       const message = err.response?.data?.message;
@@ -92,15 +92,15 @@ const Browse = ({ user }) => {
       if (message === "You already borrowed this item.") {
         console.log("You already borrowed this item.");
         setBorrowError(message);
-        setTimeout(() => setBorrowError(null), 3000);
+        setTimeout(() => setBorrowError(null), 5000);
       } else if (message === "Item not available") {
         console.log("This item is currently unavailable.");
         setBorrowError(message);
-        setTimeout(() => setBorrowError(null), 3000);
+        setTimeout(() => setBorrowError(null), 5000);
       } else {
         console.log("Borrow limit reached. You can only borrow up to 5 items.");
         setBorrowError(message);
-        setTimeout(() => setBorrowError(null), 3000);
+        setTimeout(() => setBorrowError(null), 5000);
       }
     } finally {
       setTimeout(() => setIsBorrowing(false), 1000);
@@ -113,7 +113,7 @@ const Browse = ({ user }) => {
       const res = await axios.post("http://localhost:5000/return", { userID, itemID });
       console.log("✅ Returned:", res.data);
       setReturnSuccess(res.data.title);
-      setTimeout(() => setReturnSuccess(false), 3000);
+      setTimeout(() => setReturnSuccess(false), 5000);
       fetchItems();
       fetchBorrowed();
       fetchReturned();
