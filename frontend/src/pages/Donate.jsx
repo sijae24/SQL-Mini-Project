@@ -264,7 +264,7 @@ const Donate = ({ user }) => {
             )}
 
             <div className="card-actions justify-end mt-6">
-              <button type="submit" className="btn btn-primary">
+              <button type="submit" className="btn btn-primary hover:bg-secondary">
                 Donate Item
               </button>
             </div>
@@ -274,7 +274,7 @@ const Donate = ({ user }) => {
             <div className="alert alert-success mt-4">
               <div className="flex-1">
                 <CheckCircleIcon className="h-6 w-6" />
-                <label>Thank you for your donation! Arrival date set to 7 days from now.</label>
+                <label>Thank you for your donation!</label>
               </div>
             </div>
           )}

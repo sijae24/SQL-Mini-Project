@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { BookOpenIcon, ArrowDownTrayIcon, ClockIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
+import { BookOpenIcon, ArrowDownTrayIcon, ClockIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import ItemCard from "../components/ItemCard";
 
 const Browse = ({ user }) => {
@@ -10,7 +10,9 @@ const Browse = ({ user }) => {
   const [returned, setReturned] = useState([]);
   const [isBorrowing, setIsBorrowing] = useState(false);
   const [borrowSuccess, setBorrowSuccess] = useState(false);
+  const [borrowError, setBorrowError] = useState(null);
   const [returnSuccess, setReturnSuccess] = useState(false);
+  const [returnError, setReturnError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("all");
 
@@ -46,6 +48,7 @@ const Browse = ({ user }) => {
       setBorrowed(res.data);
     } catch (err) {
       console.error("Error fetching borrowed items:", err);
+      setBorrowError(err);
     }
   };
 
@@ -56,6 +59,7 @@ const Browse = ({ user }) => {
       setReturned(res.data);
     } catch (err) {
       console.error("Error fetching returned items:", err);
+      setReturnError(err);
     }
   };
 
@@ -86,11 +90,17 @@ const Browse = ({ user }) => {
       const message = err.response?.data?.message;
 
       if (message === "You already borrowed this item.") {
-        alert("📚 You already borrowed this item.");
+        console.log("You already borrowed this item.");
+        setBorrowError(message);
+        setTimeout(() => setBorrowError(null), 3000);
       } else if (message === "Item not available") {
-        alert("🚫 This item is currently unavailable.");
+        console.log("This item is currently unavailable.");
+        setBorrowError(message);
+        setTimeout(() => setBorrowError(null), 3000);
       } else {
-        alert("Borrow limit reached. You can only borrow up to 5 items.");
+        console.log("Borrow limit reached. You can only borrow up to 5 items.");
+        setBorrowError(message);
+        setTimeout(() => setBorrowError(null), 3000);
       }
     } finally {
       setTimeout(() => setIsBorrowing(false), 1000);
@@ -109,6 +119,7 @@ const Browse = ({ user }) => {
       fetchReturned();
     } catch (err) {
       console.error("Error returning item:", err);
+      setReturnError(err);
     }
   };
 
@@ -143,6 +154,25 @@ const Browse = ({ user }) => {
           <div className="flex-1">
             <CheckCircleIcon className="h-5 w-5 mr-2" />
             <label>Successfully returned "{returnSuccess}"! Thank you.</label>
+          </div>
+        </div>
+      )}
+
+
+      {borrowError && (
+        <div className="alert alert-error mb-6">
+          <div className="flex-1">
+            <XCircleIcon className="h-5 w-5 mr-2" />
+            <label>{borrowError}</label>
+          </div>
+        </div>
+      )}
+
+      {returnError && (
+        <div className="alert alert-error mb-6">
+          <div className="flex-1">
+            <XCircleIcon className="h-5 w-5 mr-2" />
+            <label>{returnError}</label>
           </div>
         </div>
       )}
