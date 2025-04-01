@@ -56,7 +56,7 @@ When the **backend (Flask)** and **frontend (React)** are now running, you can o
 http://localhost:5173/
 ```
 ---
-## How to Test the Application
+## ✅How to Test the Application
 Once both the frontend and backend are running, follow these steps to test each feature:
 
 1️⃣ Sign In or Sign Up
