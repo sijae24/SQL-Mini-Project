@@ -56,7 +56,86 @@ When the **backend (Flask)** and **frontend (React)** are now running, you can o
 http://localhost:5173/
 ```
 ---
+## How to Test the Application
+Once both the frontend and backend are running, follow these steps to test each feature:
 
+1. Sign In or Sign Up
+```sh
+Go to http://localhost:5173/
+
+Use an existing user (e.g., ashton.hall@outlook.com) or sign up with a new account.
+```
+2. Browse & Borrow Items
+```sh
+Visit the "Browse" tab.
+
+Filter items by type or search by title.
+
+Click "Borrow" on any available item.
+
+Go to "Borrowed" tab to see active borrows.
+```
+3. Return an Item
+```sh
+Click "Return" in the "Borrowed" tab.
+
+If returned late, the system will:
+
+Automatically apply a fine.
+
+Update the status to "returned late".
+```
+4. Donate Items (Click Library Icon in Top Left to Return to Home Page)
+```sh   
+Case 1: New Item
+
+Go to "Donate" → "Donate New Item".
+
+Fill out title, type, author, etc.
+
+Arrival will be set to 7 days later.
+
+Appears in Upcoming Donations.
+
+Case 2: Existing Item with Availability > 0
+
+Choose "Donate Existing Item".
+
+Pick an item that is still available.
+
+Only logged in Donates table.
+
+Case 3: Existing Item with Availability = 0
+
+Donate again → gets added to FutureItem.
+```
+5. Register for an Event
+```sh   
+Go to the "Events" tab.
+
+Click "Register" on any event.
+
+If there is space, the user will receive a success message at the top of the page.
+
+If full, the user will receive an error message at the top of the page.
+```
+6. Volunteer
+```sh     
+Visit "Volunteer" tab.
+
+If the user is not already part of the personnel, the user can click on register as a volunteer.
+
+Once registered, you are added to the Personnel table as position = Volunteer.
+```
+7. Help Center
+```sh 
+Navigate to "Help" tab (three lines in top left corner).
+
+Submit a help request.
+
+Track status: Open, In Progress, Resolved.
+```
+---
 ## 🛠 Built With
 
 ### 🎨 Frontend  
