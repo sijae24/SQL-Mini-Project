@@ -59,13 +59,13 @@ http://localhost:5173/
 ## How to Test the Application
 Once both the frontend and backend are running, follow these steps to test each feature:
 
-1. Sign In or Sign Up
+1️⃣ Sign In or Sign Up
 ```sh
 Go to http://localhost:5173/
 
 Use an existing user (e.g., ashton.hall@outlook.com) or sign up with a new account.
 ```
-2. Browse & Borrow Items
+2️⃣ Browse & Borrow Items
 ```sh
 Visit the "Browse" tab.
 
@@ -75,7 +75,7 @@ Click "Borrow" on any available item.
 
 Go to "Borrowed" tab to see active borrows.
 ```
-3. Return an Item
+3️⃣ Return an Item
 ```sh
 Click "Return" in the "Borrowed" tab.
 
@@ -85,7 +85,7 @@ Automatically apply a fine.
 
 Update the status to "returned late".
 ```
-4. Donate Items (Click Library Icon in Top Left to Return to Home Page)
+4️⃣ Donate Items (Click Library Icon in Top Left to Return to Home Page)
 ```sh   
 Case 1: New Item
 
@@ -109,7 +109,7 @@ Case 3: Existing Item with Availability = 0
 
 Donate again → gets added to FutureItem.
 ```
-5. Register for an Event
+5️⃣ Register for an Event
 ```sh   
 Go to the "Events" tab.
 
@@ -119,7 +119,7 @@ If there is space, the user will receive a success message at the top of the pag
 
 If full, the user will receive an error message at the top of the page.
 ```
-6. Volunteer
+6️⃣ Volunteer
 ```sh     
 Visit "Volunteer" tab.
 
@@ -127,7 +127,7 @@ If the user is not already part of the personnel, the user can click on register
 
 Once registered, you are added to the Personnel table as position = Volunteer.
 ```
-7. Help Center
+7️⃣ Help Center
 ```sh 
 Navigate to "Help" tab (three lines in top left corner).
 
