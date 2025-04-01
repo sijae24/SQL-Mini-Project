@@ -2,7 +2,7 @@ import { BookOpenIcon, FilmIcon, MusicalNoteIcon, NewspaperIcon, BookmarkIcon } 
 
 const ItemCard = ({ item, onBorrow, onReturn }) => {
   return (
-    <div className="card bg-base-100 shadow-xl transition-transform hover:scale-105">
+    <div className="card bg-base-100 shadow-xl transition-transform hover:scale-105 cursor-pointer">
       <div className="card-body">
       <div className="flex items-center gap-2">
           {item.itemType === "Book" && <BookOpenIcon className="h-5 w-5 text-blue-500" />}

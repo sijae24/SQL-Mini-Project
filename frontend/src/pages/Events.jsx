@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { CalendarIcon, UserGroupIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
+import { CalendarIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
+import EventCard from "../components/EventCard";
 
 const Events = ({ user }) => {
   const [activeTab, setActiveTab] = useState("all");
@@ -117,7 +118,7 @@ const Events = ({ user }) => {
       </h1>
 
       {registerSuccess && (
-          <div className="alert alert-success mb-6">
+        <div className="alert alert-success mb-6">
           <div className="flex-1">
             <CheckCircleIcon className="h-6 w-6" />
             <label>Successfully registered for the event!</label>
@@ -126,7 +127,7 @@ const Events = ({ user }) => {
       )}
 
       {unregisterSuccess && (
-          <div className="alert alert-success mb-6">
+        <div className="alert alert-success mb-6">
           <div className="flex-1">
             <CheckCircleIcon className="h-6 w-6" />
             <label>Successfully unregistered from the event!</label>
@@ -135,7 +136,7 @@ const Events = ({ user }) => {
       )}
 
       {registerError && (
-          <div className="alert alert-error mb-6">
+        <div className="alert alert-error mb-6">
           <div className="flex-1">
             <XCircleIcon className="h-6 w-6" />
             <label>{registerError}</label>
@@ -183,51 +184,14 @@ const Events = ({ user }) => {
           </p>
         ) : (
           filteredEvents.map((event) => (
-            <div key={event.eventID} className="card bg-base-100 shadow-xl transition-transform hover:scale-105">
-              <div className="card-body">
-                <h2 className="card-title">{event.eventName}</h2>
-                <div className="flex items-center gap-2">
-                  <CalendarIcon className="h-5 w-5" />
-                  <span>{event.date}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <UserGroupIcon className="h-5 w-5" />
-                  <span>{event.audience}</span>
-                </div>
-                <p className="mt-2">
-                  <strong>Type:</strong> {event.eventType}
-                </p>
-                <p>
-                  <strong>Location:</strong> {event.roomName}
-                </p>
-                <p>
-                  <strong>Capacity:</strong> {event.capacity}
-                </p>
-                <p>
-                  <strong>Attendees:</strong> {event.attendees}
-                </p>
-
-                <div className="card-actions justify-end">
-                  {registeredEvents.includes(event.eventID) ? (
-                    <button
-                      className="btn btn-primary hover:btn-secondary"
-                      onClick={() => handleUnregister(event.eventID)}
-                      disabled={isRegistering}
-                    >
-                      Cancel
-                    </button>
-                  ) : (
-                    <button
-                      className="btn btn-primary hover:btn-secondary"
-                      onClick={() => handleRegister(event.eventID)}
-                      disabled={isRegistering}
-                    >
-                      Register
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
+            <EventCard
+              key={event.eventID}
+              event={event}
+              onRegister={handleRegister}
+              registeredEvents={registeredEvents}
+              isRegistering={isRegistering}
+              handleUnregister={handleUnregister}
+            />
           ))
         )}
       </div>
