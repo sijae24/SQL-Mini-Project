@@ -14,8 +14,10 @@ def create_database():
     cursor = conn.cursor()
 
     run_sql_script(cursor, os.path.join(base_path, "schema.sql"))
-    run_sql_script(cursor, os.path.join(base_path, "insertions.sql"))
     run_sql_script(cursor, os.path.join(base_path, "triggers.sql"))
+    run_sql_script(cursor, os.path.join(base_path, "insertions.sql"))
+    
+    
 
     conn.commit()
     conn.close()

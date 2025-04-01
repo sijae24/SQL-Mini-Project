@@ -82,16 +82,17 @@ INSERT INTO Donates (donationID, userID, itemID, donationDate) VALUES
 
 
 INSERT INTO Room (roomID, roomName, capacity) VALUES
-(1, 'Main Hall', 100),
-(2, 'Tech Room', 40),
-(3, 'Study Lounge', 30),
-(4, 'Conference Room A', 20),
-(5, 'Workshop Studio', 25),
-(6, 'Event Pavilion', 150),
-(7, 'Seminar Room', 35),
-(8, 'Reading Nook', 15),
-(9, 'VR Lab', 12),
-(10, 'Quiet Room', 10);
+(1, 'Main Hall', 40),
+(2, 'Tech Room', 20),
+(3, 'Study Lounge', 15),
+(4, 'Conference Room A', 12),
+(5, 'Workshop Studio', 18),
+(6, 'Event Pavilion', 50),
+(7, 'Seminar Room', 20),
+(8, 'Reading Nook', 8),
+(9, 'VR Lab', 6),
+(10, 'Quiet Room', 5);
+
 
 
 INSERT INTO HelpRequest (requestID, userID, request, status) VALUES
@@ -132,6 +133,11 @@ INSERT INTO Borrows (borrowID, userID, itemID, borrowDate, dueDate, returnDate, 
 
 
 INSERT INTO Attends (userID, eventID) VALUES
+(1, 10),
+(2, 10),
+(3, 10),
+(4, 9),
+(5, 9),
 (1, 1),
 (2, 2),
 (3, 3),
@@ -139,11 +145,4 @@ INSERT INTO Attends (userID, eventID) VALUES
 (5, 5),
 (6, 6),
 (7, 7),
-(8, 8),
-(9, 9),
-(10, 10),
-(1, 3),
-(2, 4),
-(3, 5),
-(4, 6),
-(5, 7);
+(8, 8);
