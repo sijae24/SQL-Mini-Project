@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { CalendarIcon, UserGroupIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
+import { CalendarIcon, UserGroupIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 
 const Events = ({ user }) => {
@@ -8,6 +8,7 @@ const Events = ({ user }) => {
   const [registeredEvents, setRegisteredEvents] = useState([]);
   const [isRegistering, setIsRegistering] = useState(false);
   const [registerSuccess, setRegisterSuccess] = useState(false);
+  const [registerError, setRegisterError] = useState(null);
   const [unregisterSuccess, setUnregisterSuccess] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("all");
@@ -53,11 +54,20 @@ const Events = ({ user }) => {
       });
       setRegisteredEvents([...registeredEvents, eventID]);
       setRegisterSuccess(true);
-      setTimeout(() => setRegisterSuccess(false), 3000);
+      setTimeout(() => setRegisterSuccess(false), 5000);
     } catch (error) {
-      alert(error.response?.data?.message || "Registration failed");
+      const message = error.response?.data?.message;
+
+      if (message.includes("event is full")) {
+        setRegisterError("This event is currently full.");
+      } else if (message.includes("is already registered")) {
+        setRegisterError("You are already registered for this event.");
+      } else {
+        setRegisterError("Registration failed. Please try again.");
+      }
+      setTimeout(() => setRegisterError(null), 5000);
     } finally {
-      setIsRegistering(false);
+      setTimeout(() => setIsRegistering(false), 1000);
     }
   };
 
@@ -73,7 +83,7 @@ const Events = ({ user }) => {
       });
       setRegisteredEvents(registeredEvents.filter((id) => id !== eventID));
       setUnregisterSuccess(true);
-      setTimeout(() => setUnregisterSuccess(false), 3000);
+      setTimeout(() => setUnregisterSuccess(false), 5000);
     } catch (error) {
       alert("Unregistration failed");
     } finally {
@@ -120,6 +130,15 @@ const Events = ({ user }) => {
           <div className="flex-1">
             <CheckCircleIcon className="h-6 w-6" />
             <label>Successfully unregistered from the event!</label>
+          </div>
+        </div>
+      )}
+
+      {registerError && (
+          <div className="alert alert-error mb-6">
+          <div className="flex-1">
+            <XCircleIcon className="h-6 w-6" />
+            <label>{registerError}</label>
           </div>
         </div>
       )}
@@ -183,6 +202,9 @@ const Events = ({ user }) => {
                 </p>
                 <p>
                   <strong>Capacity:</strong> {event.capacity}
+                </p>
+                <p>
+                  <strong>Attendees:</strong> {event.attendees}
                 </p>
 
                 <div className="card-actions justify-end">

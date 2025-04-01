@@ -512,7 +512,8 @@ def get_events():
     cursor = conn.cursor()
     cursor.execute(
         """
-        SELECT E.eventID, E.eventName, E.eventType, E.audience, E.date, E.roomID, R.roomName, R.capacity
+        SELECT E.eventID, E.eventName, E.eventType, E.audience, E.date, E.roomID, R.roomName, R.capacity,
+        (SELECT COUNT(*) FROM Attends A WHERE A.eventID = E.eventID) AS attendees
         FROM Event E 
         JOIN Room R ON E.roomID = R.roomID 
         WHERE E.date >= DATE('now')
@@ -534,6 +535,7 @@ def get_events():
                 "roomID": event[5],
                 "roomName": event[6],
                 "capacity": event[7],
+                "attendees": event[8],
             }
         )
     return jsonify(event_list)
@@ -545,7 +547,8 @@ def get_registered_events(user_id):
     cursor = conn.cursor()
     cursor.execute(
         """
-        SELECT E.eventID, E.eventName, E.eventType, E.audience, E.date, E.roomID, R.roomName, R.capacity
+        SELECT E.eventID, E.eventName, E.eventType, E.audience, E.date, E.roomID, R.roomName, R.capacity,
+        (SELECT COUNT(*) FROM Attends A WHERE A.eventID = E.eventID) AS attendees
         FROM Event E 
         JOIN Room R ON E.roomID = R.roomID 
         JOIN Attends A ON E.eventID = A.eventID 
@@ -568,6 +571,7 @@ def get_registered_events(user_id):
                 "roomID": event[5],
                 "roomName": event[6],
                 "capacity": event[7],
+                "attendees": event[8],
             }
         )
     return jsonify(event_list)
@@ -582,6 +586,34 @@ def register_event():
     try:
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
+
+        # Check if user is already registered for the event
+        cursor.execute(
+            """
+            SELECT * FROM Attends WHERE userID = ? AND eventID = ?
+        """,
+            (user_id, event_id),
+        )
+        existing_attend = cursor.fetchone()
+        if existing_attend:
+            return jsonify({"success": False, "message": "User is already registered for this event"}), 400
+
+        cursor.execute(
+            """
+            SELECT R.capacity, 
+                   (SELECT COUNT(*) FROM Attends A WHERE A.eventID = E.eventID) as current_attendees
+            FROM Event E
+            JOIN Room R ON E.roomID = R.roomID
+            WHERE E.eventID = ?
+            """,
+            (event_id,)
+        )
+    
+        capacity, attendees = cursor.fetchone()
+
+        if attendees >= capacity:
+            return jsonify({"success": False, "message": "This event is full, it has reached maximum capacity. "}), 400
+
         cursor.execute(
             """
             INSERT INTO Attends (userID, eventID) 

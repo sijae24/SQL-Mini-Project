@@ -92,16 +92,14 @@ const Browse = ({ user }) => {
       if (message === "You already borrowed this item.") {
         console.log("You already borrowed this item.");
         setBorrowError(message);
-        setTimeout(() => setBorrowError(null), 5000);
       } else if (message === "Item not available") {
         console.log("This item is currently unavailable.");
         setBorrowError(message);
-        setTimeout(() => setBorrowError(null), 5000);
       } else {
         console.log("Borrow limit reached. You can only borrow up to 5 items.");
         setBorrowError(message);
-        setTimeout(() => setBorrowError(null), 5000);
       }
+      setTimeout(() => setBorrowError(null), 5000);
     } finally {
       setTimeout(() => setIsBorrowing(false), 1000);
     }
