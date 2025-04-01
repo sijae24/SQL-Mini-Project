@@ -80,7 +80,7 @@ const ItemCard = ({ item, onBorrow, onReturn }) => {
       {(onBorrow || onReturn) && (
         <div className="card-actions justify-end mr-4 mb-4">
           <button
-            className="btn bg-[#8B0015] text-white hover:bg-secondary"
+            className="btn btn-primary hover:btn-secondary"
             onClick={() => (onBorrow ? onBorrow(item.itemID) : onReturn(item.itemID))}
           >
             {onBorrow ? "Borrow" : "Return"}

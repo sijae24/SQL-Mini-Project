@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
+import { QuestionMarkCircleIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 
 const Help = ({ user }) => {
@@ -33,6 +33,7 @@ const Help = ({ user }) => {
       setTimeout(() => setRequestSubmitted(false), 3000);
     } catch (error) {
       console.error("Error submitting help request:", error);
+      
     }
   };
 
@@ -66,7 +67,11 @@ const Help = ({ user }) => {
                 <button className="btn btn-primary hover:btn-secondary">Submit Request</button>
               </div>
             </form>
-            {requestSubmitted && <p className="mt-2 text-green-600">Help request submitted successfully!</p>}
+            {requestSubmitted && (
+              <p className="alert alert-success mt-4">
+                <CheckCircleIcon className="h-5 w-5 mr-2" /> Help request submitted successfully!
+              </p>
+            )}
           </div>
         </div>
 
@@ -80,7 +85,7 @@ const Help = ({ user }) => {
               ) : (
                 <div className="space-y-4 w-full">
                   {previousRequests.map((request, index) => (
-                    <div key={index} className="bg-white rounded-lg shadow p-4 hover:shadow-md transition-shadow">
+                    <div key={index} className="rounded-lg shadow p-4 hover:shadow-md transition-shadow">
                       <div className="flex justify-between items-start mb-2">
                         <span
                           className={`badge ${
@@ -90,7 +95,7 @@ const Help = ({ user }) => {
                           {request.status}
                         </span>
                       </div>
-                      <p className="text-gray-700">{request.request}</p>
+                      <p>{request.request}</p>
                     </div>
                   ))}
                 </div>
