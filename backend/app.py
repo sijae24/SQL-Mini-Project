@@ -42,6 +42,17 @@ def register():
         data = request.get_json()
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
+
+        # Validate input data first
+        if len(data.get("phoneNumber", "")) < 10:
+            return (
+                jsonify({"success": False, "message": "Phone number must be at least 10 digits"}),
+                400,
+            )
+
+        if '@' not in data.get("email", "") or '.' not in data.get("email", ""):
+            return jsonify({"success": False, "message": "Invalid email format"}), 400
+
         cursor.execute(
             "INSERT INTO User (userName, phoneNumber, email) VALUES (?, ?, ?)",
             (data["userName"], data["phoneNumber"], data["email"]),
@@ -49,10 +60,29 @@ def register():
         user_id = cursor.lastrowid
         conn.commit()
         conn.close()
-        return jsonify({"message": "User added successfully", "userID": user_id}), 201
+        return jsonify({"success": True, "message": "User added successfully", "userID": user_id}), 201
+
+    except sqlite3.IntegrityError as e:
+        error_msg = str(e)
+        if "UNIQUE constraint failed: User.email" in error_msg:
+            return jsonify({"success": False, "message": "Email already exists"}), 409
+        elif "UNIQUE constraint failed: User.phoneNumber" in error_msg:
+            return (
+                jsonify({"success": False, "message": "Phone number already exists"}),
+                409,
+            )
+        else:
+            return (
+                jsonify({"success": False, "message": "Database constraint error"}),
+                400,
+            )
+
     except Exception as e:
         conn.close()
-        return jsonify({"error": str(e)}), 500
+        return (
+            jsonify({"success": False, "message": str(e)}),
+            500,
+        )
 
 
 # -------------------- Personnel --------------------
@@ -362,25 +392,23 @@ def get_returned_items(user_id):
 def get_future_items():
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute("""
+    cursor.execute(
+        """
         SELECT f.itemID, f.arrivalDate, l.title, l.itemType 
         FROM FutureItem f
         JOIN LibraryItem l ON f.itemID = l.itemID
         ORDER BY f.arrivalDate
-    """)
+    """
+    )
     rows = cursor.fetchall()
     conn.close()
 
     future_items = []
     for row in rows:
-        future_items.append({
-            "itemID": row[0],
-            "arrivalDate": row[1],
-            "title": row[2],
-            "itemType": row[3]
-        })
+        future_items.append({"itemID": row[0], "arrivalDate": row[1], "title": row[2], "itemType": row[3]})
 
     return jsonify(future_items)
+
 
 @app.route("/add-future-item", methods=["POST"])
 def add_future_item():
@@ -388,24 +416,28 @@ def add_future_item():
 
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute("""
+    cursor.execute(
+        """
         INSERT INTO LibraryItem (title, itemType, availability, location, ISBN, author, artist, trackCount, issueNumber, ISSN)
         VALUES (?, ?, 0, 'TBD', ?, ?, ?, ?, ?, ?)
-    """, (
-        data.get("title"),
-        data.get("itemType"),
-        data.get("ISBN"),
-        data.get("author"),
-        data.get("artist"),
-        data.get("trackCount"),
-        data.get("issueNumber"),
-        data.get("ISSN")
-    ))
+    """,
+        (
+            data.get("title"),
+            data.get("itemType"),
+            data.get("ISBN"),
+            data.get("author"),
+            data.get("artist"),
+            data.get("trackCount"),
+            data.get("issueNumber"),
+            data.get("ISSN"),
+        ),
+    )
     new_id = cursor.lastrowid
     conn.commit()
     conn.close()
 
     return jsonify({"message": "Item added successfully", "itemID": new_id}), 201
+
 
 @app.route("/donate-item", methods=["POST"])
 def donate_item():
@@ -415,10 +447,13 @@ def donate_item():
 
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
-    cursor.execute("""
+    cursor.execute(
+        """
         INSERT INTO Donates (userID, itemID, donationDate)
         VALUES (?, ?, DATE('now'))
-    """, (user_id, item_id))
+    """,
+        (user_id, item_id),
+    )
 
     conn.commit()
     conn.close()
@@ -432,11 +467,12 @@ def process_arrivals():
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
 
-
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT itemID FROM FutureItem
             WHERE arrivalDate <= DATE('now')
-        """)
+        """
+        )
         arrivals = cursor.fetchall()
 
         if not arrivals:
@@ -444,21 +480,26 @@ def process_arrivals():
             return jsonify({"message": "No items ready to be processed today."})
 
         for (item_id,) in arrivals:
-            cursor.execute("""
+            cursor.execute(
+                """
                 UPDATE LibraryItem
                 SET availability = availability + 1
                 WHERE itemID = ?
-            """, (item_id,))
+            """,
+                (item_id,),
+            )
 
             cursor.execute("DELETE FROM FutureItem WHERE itemID = ?", (item_id,))
 
         conn.commit()
         conn.close()
 
-        return jsonify({
-            "message": f"{len(arrivals)} item(s) processed and moved to available.",
-            "processedItemIDs": [item[0] for item in arrivals]
-        })
+        return jsonify(
+            {
+                "message": f"{len(arrivals)} item(s) processed and moved to available.",
+                "processedItemIDs": [item[0] for item in arrivals],
+            }
+        )
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -497,6 +538,7 @@ def get_events():
         )
     return jsonify(event_list)
 
+
 @app.route("/registered-events/<int:user_id>", methods=["GET"])
 def get_registered_events(user_id):
     conn = sqlite3.connect(DATABASE)
@@ -522,7 +564,7 @@ def get_registered_events(user_id):
                 "eventName": event[1],
                 "eventType": event[2],
                 "audience": event[3],
-                "date": event[4],   
+                "date": event[4],
                 "roomID": event[5],
                 "roomName": event[6],
                 "capacity": event[7],
@@ -555,6 +597,7 @@ def register_event():
         print("Error registering event:", e)
         return jsonify({"success": False, "message": str(e)}), 500
 
+
 @app.route("/unregister-event", methods=["POST"])
 def unregister_event():
     data = request.get_json()
@@ -578,6 +621,7 @@ def unregister_event():
     except Exception as e:
         print("Error unregistering event:", e)
         return jsonify({"success": False, "message": str(e)}), 500
+
 
 # -------------------- HELP REQUEST --------------------
 @app.route("/help", methods=["POST"])

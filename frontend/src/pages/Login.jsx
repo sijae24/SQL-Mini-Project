@@ -40,9 +40,11 @@ const Login = ({ setUser }) => {
     }
   };
 
-  // Function to handle registration 
+  // Function to handle registration
   const handleRegister = async (e) => {
     e.preventDefault();
+    setError(null);
+
     try {
       const response = await axios.post("http://localhost:5000/register", {
         userName: registerData.name,
@@ -50,10 +52,8 @@ const Login = ({ setUser }) => {
         phoneNumber: registerData.phone,
       });
 
-      // If registration is successful, show a success message
-      if (response.data.message === "User added successfully") {
-        setError(null);
-        // alert("Registration successful! Please login.");
+      if (response.data.success) {
+        // Registration successful
         setIsRegistering(false);
         setEmail(registerData.email);
         setName(registerData.name);
@@ -61,13 +61,32 @@ const Login = ({ setUser }) => {
         setError(response.data.message);
       }
     } catch (error) {
-      console.error("Registration error:", error);
-      setError("Registration failed. Please try again. Username and email are case sensitive. Phone number must be at least 10 digits.");
+      if (error.response) {
+        const errorMessage = error.response.data.message;
+        
+        if (errorMessage.includes("Email already exists")) {
+          setError("This email is already registered. Please use a different email.");
+        } 
+        else if (errorMessage.includes("Phone number already exists")) {
+          setError("This phone number is already registered. Please use a different number.");
+        }
+        else if (errorMessage.includes("Phone number must be")) {
+          setError("Phone number must be at least 10 digits.");
+        }
+        else if (errorMessage.includes("Invalid email format")) {
+          setError("Please enter a valid email address (must contain @ and .)");
+        }
+        else {
+          setError(errorMessage || "Registration failed");
+        }
+      } else {
+        setError("Registration failed");
+      }
       setTimeout(() => setError(null), 5000);
     }
   };
 
-  // Function to handle form submission if registering or logging in 
+  // Function to handle form submission if registering or logging in
   const handleSubmit = (e) => {
     if (isRegistering) {
       handleRegister(e);
@@ -174,7 +193,7 @@ const Login = ({ setUser }) => {
                 <button type="button" className="btn btn-ghost hover:bg-base-100 w-full" onClick={() => setIsRegistering(false)}>
                   Already have an account? Login
                 </button>
-               
+
                 {/* Error message */}
                 {error && (
                   <div className="alert alert-error shadow-lg mt-4">
@@ -194,4 +213,3 @@ const Login = ({ setUser }) => {
 };
 
 export default Login;
-
