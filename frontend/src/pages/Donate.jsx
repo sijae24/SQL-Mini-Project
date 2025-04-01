@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { GiftIcon, ClockIcon, BookOpenIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
+import { GiftIcon, ClockIcon, BookOpenIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import axios from "axios";
 
 const Donate = ({ user }) => {
-
   const [donationType, setDonationType] = useState("existing");
   const [items, setItems] = useState([]);
   const [futureItems, setFutureItems] = useState([]);
@@ -16,11 +15,15 @@ const Donate = ({ user }) => {
   const [issn, setIssn] = useState("");
   const [issueNumber, setIssueNumber] = useState("");
   const [trackCount, setTrackCount] = useState("");
-  const [donationSuccess, setDonationSuccess] = useState(false);
+  const [notification, setNotification] = useState(null);
 
   const userID = user?.userID;
 
-  // Fetch library items and future items
+  const showNotification = (message, type = "success") => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 5000);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -32,6 +35,7 @@ const Donate = ({ user }) => {
         setFutureItems(futureRes.data);
       } catch (error) {
         console.error("Error fetching data:", error);
+        showNotification("An error occurred while fetching data.", "error");
       }
     };
     fetchData();
@@ -46,7 +50,7 @@ const Donate = ({ user }) => {
           itemID: selectedItem,
         });
       } else {
-        // Prepare item data with all possible fields
+        // Prepare item data
         const itemData = {
           title,
           itemType,
@@ -65,10 +69,8 @@ const Donate = ({ user }) => {
         });
       }
 
-      setDonationSuccess(true);
-      setTimeout(() => setDonationSuccess(false), 3000);
-
-      // Refresh data
+      showNotification("Donation successful!");
+      
       const [itemsRes, futureRes] = await Promise.all([
         axios.get("http://localhost:5000/library-items"),
         axios.get("http://localhost:5000/future-items"),
@@ -87,7 +89,8 @@ const Donate = ({ user }) => {
       setTrackCount("");
       setArtist("");
     } catch (error) {
-      alert(error.response?.data?.error || error.response?.data?.message || "Donation failed");
+      console.error("Error donating item:", error);
+      showNotification("An error occurred while donating the item.", "error");
     }
   };
 
@@ -269,17 +272,25 @@ const Donate = ({ user }) => {
               </button>
             </div>
           </form>
-
-          {donationSuccess && (
-            <div className="alert alert-success mt-4">
-              <div className="flex-1">
-                <CheckCircleIcon className="h-6 w-6" />
-                <label>Thank you for your donation!</label>
-              </div>
-            </div>
-          )}
         </div>
       </div>
+
+      {notification && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+          <div
+            className={`flex items-center p-4 rounded-lg shadow-lg animate-fade-in pointer-events-auto ${
+              notification.type === "success"
+                ? "bg-green-100 border border-green-400 text-green-700"
+                : "bg-red-100 border border-red-400 text-red-700"
+            }`}
+          >
+            {notification.type === "success" ? <CheckCircleIcon className="h-6 w-6 mr-2" /> : <XCircleIcon className="h-6 w-6 mr-2" />}
+            <div>
+              <label>{notification.message}</label>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="card bg-base-100 shadow-xl">
         <div className="card-body">

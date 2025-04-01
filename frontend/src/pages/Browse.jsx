@@ -9,14 +9,17 @@ const Browse = ({ user }) => {
   const [borrowed, setBorrowed] = useState([]);
   const [returned, setReturned] = useState([]);
   const [isBorrowing, setIsBorrowing] = useState(false);
-  const [borrowSuccess, setBorrowSuccess] = useState(false);
-  const [borrowError, setBorrowError] = useState(null);
-  const [returnSuccess, setReturnSuccess] = useState(false);
-  const [returnError, setReturnError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("all");
+  const [notification, setNotification] = useState(null);
 
   const userID = user?.userID;
+
+  // Function to show a notification
+  const showNotification = (message, type = "success") => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 5000);
+  };
 
   // Function to fetch library items
   const fetchItems = async () => {
@@ -48,7 +51,7 @@ const Browse = ({ user }) => {
       setBorrowed(res.data);
     } catch (err) {
       console.error("Error fetching borrowed items:", err);
-      setBorrowError(err);
+      showNotification("Error fetching borrowed items", "error");
     }
   };
 
@@ -59,7 +62,7 @@ const Browse = ({ user }) => {
       setReturned(res.data);
     } catch (err) {
       console.error("Error fetching returned items:", err);
-      setReturnError(err);
+      showNotification("Error fetching returned items", "error");
     }
   };
 
@@ -83,23 +86,21 @@ const Browse = ({ user }) => {
     try {
       const res = await axios.post("http://localhost:5000/borrow", { userID, itemID });
       console.log("✅ Borrowed successfully:", res.data);
-      setBorrowSuccess(res.data.title);
-      setTimeout(() => setBorrowSuccess(false), 5000);
+      showNotification(res.data.message, "success");
       fetchItems();
     } catch (err) {
       const message = err.response?.data?.message;
 
       if (message === "You already borrowed this item.") {
         console.log("You already borrowed this item.");
-        setBorrowError(message);
+        showNotification(message, "error");
       } else if (message === "Item not available") {
         console.log("This item is currently unavailable.");
-        setBorrowError(message);
+        showNotification(message, "error");
       } else {
         console.log("Borrow limit reached. You can only borrow up to 5 items.");
-        setBorrowError(message);
+        showNotification("Borrow limit reached. You can only borrow up to 5 items.", "error");
       }
-      setTimeout(() => setBorrowError(null), 5000);
     } finally {
       setTimeout(() => setIsBorrowing(false), 1000);
     }
@@ -110,14 +111,13 @@ const Browse = ({ user }) => {
     try {
       const res = await axios.post("http://localhost:5000/return", { userID, itemID });
       console.log("✅ Returned:", res.data);
-      setReturnSuccess(res.data.title);
-      setTimeout(() => setReturnSuccess(false), 5000);
+      showNotification(res.data.message, "success");
       fetchItems();
       fetchBorrowed();
       fetchReturned();
     } catch (err) {
       console.error("Error returning item:", err);
-      setReturnError(err);
+      showNotification("Error returning item", "error");
     }
   };
 
@@ -138,39 +138,19 @@ const Browse = ({ user }) => {
         <BookOpenIcon className="h-8 w-8 mr-2" /> Browse Library Items
       </h1>
 
-      {borrowSuccess && (
-        <div className="alert alert-success mb-6">
-          <div className="flex-1">
-            <CheckCircleIcon className="h-6 w-6" />
-            <label>Successfully borrowed "{borrowSuccess}"! Due in 7 days.</label>
-          </div>
-        </div>
-      )}
-      
-      {returnSuccess && (
-        <div className="alert alert-success mb-6">
-          <div className="flex-1">
-            <CheckCircleIcon className="h-5 w-5 mr-2" />
-            <label>Successfully returned "{returnSuccess}"! Thank you.</label>
-          </div>
-        </div>
-      )}
-
-
-      {borrowError && (
-        <div className="alert alert-error mb-6">
-          <div className="flex-1">
-            <XCircleIcon className="h-5 w-5 mr-2" />
-            <label>{borrowError}</label>
-          </div>
-        </div>
-      )}
-
-      {returnError && (
-        <div className="alert alert-error mb-6">
-          <div className="flex-1">
-            <XCircleIcon className="h-5 w-5 mr-2" />
-            <label>{returnError}</label>
+      {notification && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+          <div
+            className={`flex items-center p-4 rounded-lg shadow-lg animate-fade-in pointer-events-auto ${
+              notification.type === "success"
+                ? "bg-green-100 border border-green-400 text-green-700"
+                : "bg-red-100 border border-red-400 text-red-700"
+            }`}
+          >
+            {notification.type === "success" ? <CheckCircleIcon className="h-6 w-6 mr-2" /> : <XCircleIcon className="h-6 w-6 mr-2" />}
+            <div>
+              <label>{notification.message}</label>
+            </div>
           </div>
         </div>
       )}

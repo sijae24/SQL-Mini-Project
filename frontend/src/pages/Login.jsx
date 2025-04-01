@@ -12,9 +12,14 @@ const Login = ({ setUser }) => {
     email: "",
     phone: "",
   });
-  const [error, setError] = useState(null);
-
+  const [notification, setNotification] = useState(null);
   const navigate = useNavigate();
+
+  // Function to show a notification
+  const showNotification = (message, type = "error") => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 5000);
+  };
 
   // Function to handle login by sending a POST request
   const handleLogin = async (e) => {
@@ -30,20 +35,19 @@ const Login = ({ setUser }) => {
         setUser(response.data.user);
         localStorage.setItem("user", JSON.stringify(response.data.user));
         navigate("/");
+        console.log("Login successful");
       } else {
-        setError(response.data.message || "Invalid credentials");
+        showNotification("Login failed. Please try again. Use valid email and name (case sensitive).", "error");
       }
     } catch (error) {
       console.error("Login error:", error);
-      setError("Login failed. Please try again. Use valid credentials. Username and email are case sensitive.");
-      setTimeout(() => setError(null), 5000);
+      showNotification("Login failed. Please try again. Use valid email and name (case sensitive).", "error");
     }
   };
 
   // Function to handle registration
   const handleRegister = async (e) => {
     e.preventDefault();
-    setError(null);
 
     try {
       const response = await axios.post("http://localhost:5000/register", {
@@ -58,31 +62,26 @@ const Login = ({ setUser }) => {
         setEmail(registerData.email);
         setName(registerData.name);
       } else {
-        setError(response.data.message);
+        showNotification("Registration failed. Please try again.", "error");
       }
     } catch (error) {
       if (error.response) {
         const errorMessage = error.response.data.message;
-        
+
         if (errorMessage.includes("Email already exists")) {
-          setError("This email is already registered. Please use a different email.");
-        } 
-        else if (errorMessage.includes("Phone number already exists")) {
-          setError("This phone number is already registered. Please use a different number.");
-        }
-        else if (errorMessage.includes("Phone number must be")) {
-          setError("Phone number must be at least 10 digits.");
-        }
-        else if (errorMessage.includes("Invalid email format")) {
-          setError("Please enter a valid email address (must contain @ and .)");
-        }
-        else {
-          setError(errorMessage || "Registration failed");
+          showNotification("Email already exists. Please use a different email.", "error");
+        } else if (errorMessage.includes("Phone number already exists")) {
+          showNotification("Phone number already exists. Please use a different phone number.", "error");
+        } else if (errorMessage.includes("Phone number must be")) {
+          showNotification("Phone number must be 10 digits", "error");
+        } else if (errorMessage.includes("Invalid email format")) {
+          showNotification("Invalid email format", "error");
+        } else {
+          showNotification("Registration failed. Please try again.", "error");
         }
       } else {
-        setError("Registration failed");
+        showNotification("Registration failed. Please try again.", "error");
       }
-      setTimeout(() => setError(null), 5000);
     }
   };
 
@@ -133,13 +132,13 @@ const Login = ({ setUser }) => {
                 <button type="button" className="btn btn-ghost hover:bg-base-100 w-full" onClick={() => setIsRegistering(true)}>
                   Need an account? Register
                 </button>
-
-                {/* Error message */}
-                {error && (
-                  <div className="alert alert-error shadow-lg mt-4">
-                    <div>
-                      <XCircleIcon className="h-6 w-6" />
-                      <span>{error}</span>
+                {notification && (
+                  <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+                    <div className="flex items-center p-4 rounded-lg shadow-lg animate-fade-in pointer-events-auto bg-red-100 border border-red-400 text-red-700">
+                      <XCircleIcon className="h-6 w-6 mr-2" />
+                      <div>
+                        <label>{notification.message}</label>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -194,12 +193,13 @@ const Login = ({ setUser }) => {
                   Already have an account? Login
                 </button>
 
-                {/* Error message */}
-                {error && (
-                  <div className="alert alert-error shadow-lg mt-4">
-                    <div className="flex-1">
-                      <XCircleIcon className="h-6 w-6" />
-                      <span>{error}</span>
+                {notification && (
+                  <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+                    <div className="flex items-center p-4 rounded-lg shadow-lg animate-fade-in pointer-events-auto bg-red-100 border border-red-400 text-red-700">
+                      <XCircleIcon className="h-6 w-6 mr-2" />
+                      <div>
+                        <label>{notification.message}</label>
+                      </div>
                     </div>
                   </div>
                 )}

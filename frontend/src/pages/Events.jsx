@@ -8,13 +8,17 @@ const Events = ({ user }) => {
   const [events, setEvents] = useState([]);
   const [registeredEvents, setRegisteredEvents] = useState([]);
   const [isRegistering, setIsRegistering] = useState(false);
-  const [registerSuccess, setRegisterSuccess] = useState(false);
-  const [registerError, setRegisterError] = useState(null);
-  const [unregisterSuccess, setUnregisterSuccess] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedType, setSelectedType] = useState("all");
+  const [notification, setNotification] = useState(null);
 
   const userID = user?.userID;
+
+  // Function to show a notification
+  const showNotification = (message, type = "success") => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 5000);
+  };
 
   // Fetch all events
   useEffect(() => {
@@ -54,19 +58,17 @@ const Events = ({ user }) => {
         eventID,
       });
       setRegisteredEvents([...registeredEvents, eventID]);
-      setRegisterSuccess(true);
-      setTimeout(() => setRegisterSuccess(false), 5000);
+      showNotification("Successfully registered for the event!", "success");
     } catch (error) {
       const message = error.response?.data?.message;
 
       if (message.includes("event is full")) {
-        setRegisterError("This event is currently full.");
-      } else if (message.includes("is already registered")) {
-        setRegisterError("You are already registered for this event.");
+        showNotification("This event is currently full.", "error");
+      } else if (message.includes("already registered")) {
+        showNotification("You are already registered for this event.", "error");
       } else {
-        setRegisterError("Registration failed. Please try again.");
+        showNotification("Registration failed. Please try again.", "error");
       }
-      setTimeout(() => setRegisterError(null), 5000);
     } finally {
       setTimeout(() => setIsRegistering(false), 1000);
     }
@@ -83,10 +85,10 @@ const Events = ({ user }) => {
         eventID,
       });
       setRegisteredEvents(registeredEvents.filter((id) => id !== eventID));
-      setUnregisterSuccess(true);
-      setTimeout(() => setUnregisterSuccess(false), 5000);
+      showNotification("Successfully unregistered from the event!", "success");
     } catch (error) {
-      alert("Unregistration failed");
+      showNotification("Unregistration failed. Please try again.", "error");
+      console.error("Error unregistering event:", error);
     } finally {
       setIsRegistering(false);
     }
@@ -117,29 +119,19 @@ const Events = ({ user }) => {
         <CalendarIcon className="h-8 w-8 mr-2" /> Find Events
       </h1>
 
-      {registerSuccess && (
-        <div className="alert alert-success mb-6">
-          <div className="flex-1">
-            <CheckCircleIcon className="h-6 w-6" />
-            <label>Successfully registered for the event!</label>
-          </div>
-        </div>
-      )}
-
-      {unregisterSuccess && (
-        <div className="alert alert-success mb-6">
-          <div className="flex-1">
-            <CheckCircleIcon className="h-6 w-6" />
-            <label>Successfully unregistered from the event!</label>
-          </div>
-        </div>
-      )}
-
-      {registerError && (
-        <div className="alert alert-error mb-6">
-          <div className="flex-1">
-            <XCircleIcon className="h-6 w-6" />
-            <label>{registerError}</label>
+      {notification && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+          <div
+            className={`flex items-center p-4 rounded-lg shadow-lg animate-fade-in pointer-events-auto ${
+              notification.type === "success"
+                ? "bg-green-100 border border-green-400 text-green-700"
+                : "bg-red-100 border border-red-400 text-red-700"
+            }`}
+          >
+            {notification.type === "success" ? <CheckCircleIcon className="h-6 w-6 mr-2" /> : <XCircleIcon className="h-6 w-6 mr-2" />}
+            <div>
+              <label>{notification.message}</label>
+            </div>
           </div>
         </div>
       )}
