@@ -35,9 +35,9 @@ A simple Library Management System built using **React (Vite) for the frontend**
 ---
 
 ### 2️⃣ Frontend Setup (React + Vite)
-1. Navigate to the frontend folder:
+1. Navigate to the frontend folder in another terminal:
    ```sh
-   cd ../frontend
+   cd frontend
    ```
 2. Install dependencies:
    ```sh
