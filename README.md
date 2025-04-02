@@ -17,6 +17,10 @@ A simple Library Management System built using **React (Vite) for the frontend**
      python -m venv venv
      venv\Scripts\activate
      ```
+   if there are any errors with powershell, 
+   ``` sh
+   Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
+   ```
    - **Mac/Linux:**
      ```sh
      python -m venv venv
