@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { XCircleIcon } from "@heroicons/react/24/outline";
 
 const Login = ({ setUser }) => {
   const [email, setEmail] = useState("");
@@ -11,9 +12,16 @@ const Login = ({ setUser }) => {
     email: "",
     phone: "",
   });
-
+  const [notification, setNotification] = useState(null);
   const navigate = useNavigate();
 
+  // Function to show a notification
+  const showNotification = (message, type = "error") => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 5000);
+  };
+
+  // Function to handle login by sending a POST request
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -22,20 +30,25 @@ const Login = ({ setUser }) => {
         name,
       });
 
+      // If login is successful, update the user state then navigate to the home page
       if (response.data.success) {
         setUser(response.data.user);
         localStorage.setItem("user", JSON.stringify(response.data.user));
         navigate("/");
+        console.log("Login successful");
       } else {
-        alert(response.data.message || "Invalid credentials");
+        showNotification("Login failed. Please try again. Use valid email and name (case sensitive).", "error");
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert("Login failed. Please try again.");
+      showNotification("Login failed. Please try again. Use valid email and name (case sensitive).", "error");
     }
   };
+
+  // Function to handle registration
   const handleRegister = async (e) => {
     e.preventDefault();
+
     try {
       const response = await axios.post("http://localhost:5000/register", {
         userName: registerData.name,
@@ -43,18 +56,36 @@ const Login = ({ setUser }) => {
         phoneNumber: registerData.phone,
       });
 
-      if (response.data.message === "User added successfully") {
-        alert("Registration successful! Please login.");
+      if (response.data.success) {
+        // Registration successful
         setIsRegistering(false);
         setEmail(registerData.email);
         setName(registerData.name);
+      } else {
+        showNotification("Registration failed. Please try again.", "error");
       }
     } catch (error) {
-      console.error("Registration error:", error);
-      alert("Registration failed. Please try again.");
+      if (error.response) {
+        const errorMessage = error.response.data.message;
+
+        if (errorMessage.includes("Email already exists")) {
+          showNotification("Email already exists. Please use a different email.", "error");
+        } else if (errorMessage.includes("Phone number already exists")) {
+          showNotification("Phone number already exists. Please use a different phone number.", "error");
+        } else if (errorMessage.includes("Phone number must be")) {
+          showNotification("Phone number must be 10 digits", "error");
+        } else if (errorMessage.includes("Invalid email format")) {
+          showNotification("Invalid email format", "error");
+        } else {
+          showNotification("Registration failed. Please try again.", "error");
+        }
+      } else {
+        showNotification("Registration failed. Please try again.", "error");
+      }
     }
   };
 
+  // Function to handle form submission if registering or logging in
   const handleSubmit = (e) => {
     if (isRegistering) {
       handleRegister(e);
@@ -101,6 +132,16 @@ const Login = ({ setUser }) => {
                 <button type="button" className="btn btn-ghost hover:bg-base-100 w-full" onClick={() => setIsRegistering(true)}>
                   Need an account? Register
                 </button>
+                {notification && (
+                  <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+                    <div className="flex items-center p-4 rounded-lg shadow-lg animate-fade-in pointer-events-auto bg-red-100 border border-red-400 text-red-700">
+                      <XCircleIcon className="h-6 w-6 mr-2" />
+                      <div>
+                        <label>{notification.message}</label>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </form>
             </>
           ) : (
@@ -151,6 +192,17 @@ const Login = ({ setUser }) => {
                 <button type="button" className="btn btn-ghost hover:bg-base-100 w-full" onClick={() => setIsRegistering(false)}>
                   Already have an account? Login
                 </button>
+
+                {notification && (
+                  <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+                    <div className="flex items-center p-4 rounded-lg shadow-lg animate-fade-in pointer-events-auto bg-red-100 border border-red-400 text-red-700">
+                      <XCircleIcon className="h-6 w-6 mr-2" />
+                      <div>
+                        <label>{notification.message}</label>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </form>
             </>
           )}

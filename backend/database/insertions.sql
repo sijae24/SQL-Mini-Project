@@ -1,4 +1,4 @@
-INSERT INTO "User" (userID, userName, phoneNumber, email) VALUES
+INSERT INTO User (userID, userName, phoneNumber, email) VALUES
 (1, 'LeBron James', '6041123457', 'LeBron.James@gmail.com'),
 (2, 'Evan Smith', '6045632134', 'evan.smith@gmail.com'),
 (3, 'Jake Love', '6042103125', 'jake.love@yahoo.com'),
@@ -8,7 +8,12 @@ INSERT INTO "User" (userID, userName, phoneNumber, email) VALUES
 (7, 'Grace Park', '6047890123', 'grace.park@gmail.com'),
 (8, 'Harinder Singh', '6048905555', 'harry.singh@outlook.com'),
 (9, 'Jacob Tran', '6049011344', 'jacob.tran@gmail.com'),
-(10, 'Ben Shepphard', '6048046311', 'ben.shepphard@gmail.com');
+(10, 'Stringer Bell', '6048046311', 'stringer.bell@gmail.com'),
+(11, 'John Locke', '6048151623', 'john.locke@gmail.com'),
+(12, 'Jimin Park', '6046540613', 'jimin.park@gmail.com'),
+(13, 'Ashton Hall', '6047418529', 'ashton.hall@outlook.com'),
+(14, 'James Flint', '6049638521', 'james.flint@gmail.com'),
+(15, 'Kevin Garvey', '6041597531', 'kevin.garvey@gmail.com');
 
 INSERT INTO Personnel (userID, position, salary) VALUES
 (1, 'Librarian', 50000),
@@ -22,17 +27,16 @@ INSERT INTO Personnel (userID, position, salary) VALUES
 (9, 'Volunteer', 0),
 (10, 'Assistant Manager', 49000);
 
-
 INSERT INTO LibraryItem (itemID, title, itemType, availability, location, ISBN, author, artist, trackCount, issueNumber, ISSN) VALUES
 (1, 'Pride and Prejudice', 'Book', 3, 'Shelf A1', '9780141199078', 'Jane Austen', NULL, NULL, NULL, NULL),
 (2, 'Thriller', 'CD', 2, 'Shelf B2', NULL, NULL, 'Michael Jackson', 9, NULL, NULL),
-(3, 'Scientific American March', 'Magazine', 5, 'Shelf C3', NULL, NULL, NULL, NULL, 'March2023', NULL),
-(4, 'Nature Neuroscience', 'Journal', 2, 'Online', NULL, NULL, NULL, NULL, NULL, '0028-0836'),
-(5, 'Future of AI', 'Book', 0, 'Shelf D1', NULL, 'John Futureman', NULL, NULL, NULL, NULL),
+(3, 'Scientific American March', 'Magazine', 5, 'Shelf C3', NULL, NULL, NULL, NULL, 'March2023', 00368733),
+(4, 'Nature Neuroscience', 'Journal', 2, 'Online', NULL, NULL, NULL, NULL, NULL, '00280836'),
+(5, 'Journal of Data Science', 'Journal', 2, 'Online', NULL, NULL, NULL, NULL, NULL, '23783751'),
 (6, 'The Great Gatsby', 'Book', 1, 'Shelf A2', '9780743273565', 'F. Scott Fitzgerald', NULL, NULL, NULL, NULL),
-(7, 'Kind of Blue', 'CD', 3, 'Shelf B3', NULL, NULL, 'Miles Davis', 5, NULL, NULL),
-(8, 'Time Magazine April', 'Magazine', 4, 'Shelf C1', NULL, NULL, NULL, NULL, 'April2023', NULL),
-(9, 'Journal of Data Science', 'Journal', 2, 'Online', NULL, NULL, NULL, NULL, NULL, '2378-3751'),
+(7, 'Songs in the Key of Life', 'CD', 3, 'Shelf B3', NULL, NULL, 'Stevie Wonder', 5, NULL, NULL),
+(8, 'Time Magazine April', 'Magazine', 4, 'Shelf C1', NULL, NULL, NULL, NULL, 'April2023', 00407814),
+(9, 'Future of AI', 'Book', 0, 'Shelf D1', NULL, 'John Futureman', NULL, NULL, NULL, NULL),
 (10, 'Quantum Mechanics Explained', 'Book', 0, 'Shelf D2', NULL, 'Alice Quantum', NULL, NULL, NULL, NULL),
 (11, 'AI and Ethics', 'Book', 0, 'Shelf D3', NULL, 'Sam Ethos', NULL, NULL, NULL, NULL),
 (12, 'Smart Libraries 2030', 'Book', 0, 'Shelf D4', NULL, 'Lib Smartman', NULL, NULL, NULL, NULL),
@@ -41,7 +45,27 @@ INSERT INTO LibraryItem (itemID, title, itemType, availability, location, ISBN, 
 (15, 'Blockchain in Libraries', 'Book', 0, 'Shelf D7', NULL, 'Blocky Chain', NULL, NULL, NULL, NULL),
 (16, 'Digital Storytelling', 'Book', 0, 'Shelf D8', NULL, 'Digi Teller', NULL, NULL, NULL, NULL),
 (17, 'Quantum Archives', 'Book', 0, 'Shelf D9', NULL, 'Q Archivist', NULL, NULL, NULL, NULL),
-(18, 'Next-Gen Cataloging', 'Book', 0, 'Shelf D10', NULL, 'Next Cat', NULL, NULL, NULL, NULL);
+(18, 'Next-Gen Cataloging', 'Book', 0, 'Shelf D10', NULL, 'Next Cat', NULL, NULL, NULL, NULL),
+(19, 'The Lord of the Rings', 'Book', 4, 'Shelf B1', '9780544003415', 'J.R.R Tolkien', NULL, NULL, NULL, NULL),
+(20, 'Sapiens: A Brief History of Humankind', 'Book', 2, 'Shelf B2', '9780062316097', 'Yuval Noah Harari', NULL, NULL, NULL, NULL),
+(21, 'One Piece', 'Book', 5, 'Shelf B2', '9781974760329', 'Eiichiro Oda', NULL, NULL, NULL, NULL),
+(22, 'Abbey Road', 'CD', 3, 'Shelf C1', NULL, NULL, 'The Beatles', 17, NULL, NULL),
+(23, 'To Pimp a Butterfly', 'CD', 2, 'Shelf C2', NULL, NULL, 'Kendrick Lamar', 16, NULL, NULL),
+(24, 'National Geographic - April 2025', 'Magazine', 5, 'Shelf M1', NULL, NULL, NULL, NULL, 'Apr2025', '00279358'),
+(25, 'Shonen Jump', 'Magazine', 5, 'Shelf M1', NULL, NULL, NULL, NULL, 'April2025', '10707199');
+
+INSERT INTO FutureItem (itemID, arrivalDate) VALUES
+(9, '2025-04-03'),
+(10, '2025-04-01'),
+(11, '2025-04-09'),
+(12, '2025-04-10'),
+(13, '2025-04-10'),
+(14, '2025-04-11'),
+(15, '2025-04-12'),
+(16, '2025-04-13'),
+(17, '2025-04-13'),
+(18, '2025-04-14');
+
 
 INSERT INTO Donates (donationID, userID, itemID, donationDate) VALUES
 (1, 3, 5, '2025-03-27'),
@@ -56,44 +80,22 @@ INSERT INTO Donates (donationID, userID, itemID, donationDate) VALUES
 (18, 2, 18, '2025-04-07');
 
 
-INSERT INTO Borrows (borrowID, userID, itemID, borrowDate, dueDate, returnDate, fine, status) VALUES
-(1, 1, 100, '2025-03-01', '2025-03-15', NULL, 0, 'Borrowed'),
-(2, 2, 101, '2025-03-02', '2025-03-16', NULL, 0, 'Borrowed'),
-(3, 3, 102, '2025-03-03', '2025-03-17', NULL, 0, 'Borrowed'),
-(4, 4, 103, '2025-03-04', '2025-03-18', NULL, 0, 'Borrowed'),
-(5, 5, 104, '2025-03-05', '2025-03-19', NULL, 0, 'Borrowed'),
-(6, 6, 105, '2025-03-06', '2025-03-20', NULL, 0, 'Borrowed'),
-(7, 7, 106, '2025-03-07', '2025-03-21', NULL, 0, 'Borrowed'),
-(8, 8, 107, '2025-03-08', '2025-03-22', NULL, 0, 'Borrowed'),
-(9, 9, 108, '2025-03-09', '2025-03-23', NULL, 0, 'Borrowed'),
-(10, 10, 109, '2025-03-10', '2025-03-24', NULL, 0, 'Borrowed');
 
 INSERT INTO Room (roomID, roomName, capacity) VALUES
-(1, 'Main Hall', 100),
-(2, 'Tech Room', 40),
-(3, 'Study Lounge', 30),
-(4, 'Conference Room A', 20),
-(5, 'Workshop Studio', 25),
-(6, 'Event Pavilion', 150),
-(7, 'Seminar Room', 35),
-(8, 'Reading Nook', 15),
-(9, 'VR Lab', 12),
-(10, 'Quiet Room', 10);
+(1, 'Main Hall', 40),
+(2, 'Tech Room', 20),
+(3, 'Study Lounge', 15),
+(4, 'Conference Room A', 12),
+(5, 'Workshop Studio', 18),
+(6, 'Event Pavilion', 50),
+(7, 'Seminar Room', 20),
+(8, 'Reading Nook', 8),
+(9, 'VR Lab', 6),
+(10, 'Quiet Room', 5);
 
-INSERT INTO Event (eventID, eventName, eventType, audience, date, personnelID, roomID) VALUES
-(1, 'Intro to SQL', 'Workshop', 'Students', '2025-04-10', 1, 2),
-(2, 'Data Science Meetup', 'Talk', 'General Public', '2025-04-12', 3, 1),
-(3, 'Resume Building Session', 'Workshop', 'Job Seekers', '2025-04-14', 6, 5),
-(4, 'Python Bootcamp', 'Training', 'Beginners', '2025-04-15', 2, 3),
-(5, 'Library Tech Tour', 'Tour', 'All Ages', '2025-04-18', 5, 9),
-(6, 'AI in Everyday Life', 'Seminar', 'Tech Enthusiasts', '2025-04-20', 10, 4),
-(7, 'Mindfulness & Reading', 'Session', 'Adults', '2025-04-22', 4, 10),
-(8, 'Book Club: Fiction Night', 'Discussion', 'Members', '2025-04-25', 7, 8),
-(9, 'Kids Coding Hour', 'Activity', 'Children', '2025-04-26', 1, 6),
-(10, 'Ethics of AI', 'Panel', 'Academics', '2025-04-28', 3, 7);
+
 
 INSERT INTO HelpRequest (requestID, userID, request, status) VALUES
-(1, 2, 'Need help with finding academic journals.', 'Open'),
 (2, 5, 'Printer on 2nd floor is not working.', 'Resolved'),
 (3, 7, 'How do I renew a book online?', 'Open'),
 (4, 6, 'Room booking system not responding.', 'In Progress'),
@@ -102,8 +104,20 @@ INSERT INTO HelpRequest (requestID, userID, request, status) VALUES
 (7, 4, 'Lost my library card. How do I replace it?', 'Open'),
 (8, 9, 'Is there a quiet space for study?', 'Resolved'),
 (9, 10, 'Need assistance uploading a document.', 'In Progress'),
-(10, 1, 'What is the fine for a lost book?', 'Open');
+(10, 1, 'What is the fine for a lost book?', 'Open'),
+(11, 2, 'Need help with finding academic journals.', 'Open');
 
+INSERT INTO Event (eventID, eventName, eventType, audience, date, personnelID, roomID) VALUES
+(1, 'Resume Workshop', 'Workshop', 'Students', '2025-04-05', 1, 1),
+(2, 'Digital Research Skills', 'Workshop', 'Teens', '2025-04-06', 2, 2),
+(3, 'Author Lecture: Sci-Fi Futures', 'Lecture', 'Adults', '2025-04-07', 3, 3),
+(4, 'Library Orientation Lecture', 'Lecture', 'Everyone', '2025-04-08', 4, 4),
+(5, 'Climate Change & Books Seminar', 'Seminar', 'Adults', '2025-04-09', 5, 5),
+(6, 'Academic Writing Seminar', 'Seminar', 'Students', '2025-04-10', 6, 6),
+(7, 'Annual Library Innovation Conf.', 'Conference', 'Everyone', '2025-04-11', 7, 7),
+(8, 'Youth Literacy Conference', 'Conference', 'Teens', '2025-04-12', 8, 8),
+(9, 'Data Literacy Workshop', 'Workshop', 'Adults', '2025-04-13', 9, 9),
+(10, 'Publishing Trends Conference', 'Conference', 'Adults', '2025-04-14', 10, 10);
 
 INSERT INTO Borrows (borrowID, userID, itemID, borrowDate, dueDate, returnDate, fine, status) VALUES
 (1, 1, 1, '2025-03-10', '2025-03-17', '2025-03-16', 0, 'returned'),
@@ -115,34 +129,15 @@ INSERT INTO Borrows (borrowID, userID, itemID, borrowDate, dueDate, returnDate, 
 (7, 7, 6, '2025-03-15', '2025-03-22', '2025-03-23', 0.5, 'returned late'),
 (8, 8, 1, '2025-03-20', '2025-03-27', NULL, 0, 'borrowed'),
 (9, 9, 7, '2025-03-10', '2025-03-17', '2025-03-17', 0, 'returned'),
-(10, 10, 6, '2025-03-12', '2025-03-19', '2025-03-22', 1.5, 'returned late');
+(10, 10, 6, '2025-03-12', '2025-03-19', '2025-03-22', 1.5, 'returned late');;
 
-
-INSERT INTO Room (roomID, roomName, capacity) VALUES
-(1, 'Room A', 25),
-(2, 'Room B', 40),
-(3, 'Room C', 30),
-(4, 'Digital Lab', 20),
-(5, 'Conference Hall', 100),
-(6, 'Children Area', 15),
-(7, 'AV Room', 35),
-(8, 'Study Zone 1', 12),
-(9, 'Seminar Room', 50),
-(10, 'Lecture Hall', 80);
-
-INSERT INTO Event (eventID, eventName, eventType, audience, date, personnelID, roomID) VALUES
-(1, 'Story Time', 'Kids', 'Children', '2025-04-05', 1, 6),
-(2, 'Author Talk: Sci-Fi Futures', 'Talk', 'Adults', '2025-04-07', 2, 5),
-(3, 'Resume Workshop', 'Workshop', 'Teens', '2025-04-08', 3, 2),
-(4, 'Digital Literacy 101', 'Class', 'Seniors', '2025-04-09', 4, 4),
-(5, 'Board Game Night', 'Social', 'Everyone', '2025-04-10', 5, 1),
-(6, 'Art Hour', 'Activity', 'Kids', '2025-04-11', 6, 6),
-(7, 'Climate Change Panel', 'Seminar', 'Adults', '2025-04-12', 7, 9),
-(8, 'Yoga for Wellness', 'Health', 'Adults', '2025-04-13', 8, 10),
-(9, 'Coding for Beginners', 'Workshop', 'Teens', '2025-04-14', 9, 3),
-(10, 'Scholarship Info Session', 'Info', 'Students', '2025-04-15', 10, 7);
 
 INSERT INTO Attends (userID, eventID) VALUES
+(1, 10),
+(2, 10),
+(3, 10),
+(4, 9),
+(5, 9),
 (1, 1),
 (2, 2),
 (3, 3),
@@ -150,14 +145,4 @@ INSERT INTO Attends (userID, eventID) VALUES
 (5, 5),
 (6, 6),
 (7, 7),
-(8, 8),
-(9, 9),
-(10, 10),
-(1, 3),
-(2, 4),
-(3, 5),
-(4, 6),
-(5, 7);
-
-
-
+(8, 8);
